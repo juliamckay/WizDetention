@@ -22,15 +22,8 @@ class GameScreen(arcade.View):
         self.tile_map = None
         self.scene = None
 
-        # Player Characters
-        self.wizard_list = None
-        self.familiar_list = None
-
         self.wizard_sprite = None
         self.familiar_sprite = None
-
-        # Walls
-        self.wall_list = None
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
@@ -45,19 +38,18 @@ class GameScreen(arcade.View):
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.wizard_list = arcade.SpriteList()
-        self.familiar_list = arcade.SpriteList()
+        # Player Sprite Setup
+        self.scene.add_sprite_list("Wiz")
+        self.scene.add_sprite_list("Cat")
+        self.scene.add_sprite_list("Wall", use_spatial_hash=True)
 
         self.wizard_sprite = arcade.Sprite("Assets\\Sprites\\R_witch_stationary.png", WIZARD_SCALING)
         self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
-        self.wizard_list.append(self.wizard_sprite)
+        self.scene.add_sprite("Wiz", self.wizard_sprite)
 
         self.familiar_sprite = arcade.Sprite("Assets\\Sprites\\cat05.png", FAMILIAR_SCALING)
         self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
-        self.familiar_list.append(self.familiar_sprite)
-
-        # Walls
-        self.wall_list = arcade.SpriteList(use_spatial_hash=True)
+        self.scene.add_sprite("Cat", self.familiar_sprite)
 
     def on_show_view(self):
         self.setup()
@@ -67,6 +59,3 @@ class GameScreen(arcade.View):
         self.clear()
         self.manager.draw()
         self.scene.draw()
-
-        self.wizard_list.draw()
-        self.familiar_list.draw()
