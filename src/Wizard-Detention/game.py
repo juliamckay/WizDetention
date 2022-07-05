@@ -1,9 +1,7 @@
 import arcade
 import arcade.gui
-from Assets.Maps import *
-from Assets.Sprites import *
+from command import *
 from constants import *
-from typing import get_type_hints
 
 
 class GameScreen(arcade.View):
@@ -18,6 +16,7 @@ class GameScreen(arcade.View):
         self.manager.enable()
 
         # Variable Declarations
+        self.ih = None
 
         # Game screen
         self.tile_map = None
@@ -58,6 +57,8 @@ class GameScreen(arcade.View):
         self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
         self.scene.add_sprite("Cat", self.familiar_sprite)
 
+        self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite)
+
         self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard_sprite, gravity_constant=GRAVITY,
                                                   walls=self.scene["Platforms"])
         self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar_sprite, gravity_constant=GRAVITY,
@@ -73,38 +74,15 @@ class GameScreen(arcade.View):
         self.scene.draw()
 
     def on_key_press(self, key, mods):
-        # Wizard keys are WASD
-        if key == arcade.key.W:
-            if self.pe1.can_jump():
-                self.wizard_sprite.change_y = PLAYER_JS
-        elif key == arcade.key.A:
-            self.wizard_sprite.change_x = -PLAYER_MS
-        elif key == arcade.key.D:
-            self.wizard_sprite.change_x = PLAYER_MS
-
-        # Familiar keys are Arrow Keys
-        elif key == arcade.key.UP:
-            if self.pe2.can_jump():
-                self.familiar_sprite.change_y = PLAYER_JS
-        elif key == arcade.key.LEFT:
-            self.familiar_sprite.change_x = -PLAYER_MS
-        elif key == arcade.key.RIGHT:
-            self.familiar_sprite.change_x = PLAYER_MS
+        # Check command.py for commands
+        command = self.ih.handle_input(key)
+        if command:
+            command()
 
     def on_key_release(self, key, mods):
-        # Wizard keys are WASD
-        if key == arcade.key.W:
-            if self.pe1.can_jump():
-                self.wizard_sprite.change_y = 0
-        elif key == arcade.key.A or key == arcade.key.D:
-            self.wizard_sprite.change_x = 0
-
-        # Familiar keys are Arrow Keys
-        elif key == arcade.key.UP:
-            if self.pe2.can_jump():
-                self.familiar_sprite.change_y = 0
-        elif key == arcade.key.LEFT or arcade.key.RIGHT:
-            self.familiar_sprite.change_x = 0
+        command = self.ih.handle_input(key)
+        if command:
+            command.undo()
 
     def on_update(self, delta_time):
         self.pe1.update()
