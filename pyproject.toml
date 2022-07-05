@@ -1,0 +1,25 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "arcade>=2.6.15"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Wizard-Detention"
+version = "0.0.1"
+authors = [
+  { name="Julia McKay, Chandler Fox, and Audrey DeHoog", email="adehoog@ufl.edu" },
+]
+description = "A small example package"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/juliamckay/WizDetention"

@@ -18,7 +18,7 @@ class GameScreen(arcade.View):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         # name of map to load
-        map_name = "Maps/Level_0_map.json"
+        map_name = "..\\Maps\\Level_0_map.json"
         layer_options = {
             "Platforms": {
                 "use_spatial_hash": True,

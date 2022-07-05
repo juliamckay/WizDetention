@@ -27,7 +27,7 @@ class MenuScreen(arcade.View):
     def on_show_view(self):
         # Title
         game_title = arcade.gui.UITextArea(text="Wizard Detention",
-                                           width=SCREEN_WIDTH / 2,
+                                           width=500,
                                            height=40,
                                            font_size=30,
                                            font_name="Kenney Future")
