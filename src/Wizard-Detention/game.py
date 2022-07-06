@@ -32,6 +32,10 @@ class GameScreen(arcade.View):
         self.move_plat_1_up = True
         self.move_plat_1_down = False
 
+        self.moving_platform_2 = None
+        self.move_plat_2_up = True
+        self.move_plat_2_down = False
+
         # Physics Engine
         self.pe1 = None
         self.pe2 = None
@@ -51,6 +55,9 @@ class GameScreen(arcade.View):
             "Lever 1": {
                 "use_spatial_hash": True,
             },
+            "Button 1": {
+                "use_spatial_hash": True,
+            },
         }
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
@@ -61,6 +68,11 @@ class GameScreen(arcade.View):
         self.moving_platform_1.center_x = 1175
         self.moving_platform_1.center_y = 380
         self.scene.add_sprite("Platforms", self.moving_platform_1)
+
+        self.moving_platform_2 = arcade.Sprite("Assets\\Sprites\\moving_platform_02_v.png", PLATFORM_SCALING_V)
+        self.moving_platform_2.center_x = 600
+        self.moving_platform_2.center_y = 455
+        self.scene.add_sprite("Platforms", self.moving_platform_2)
 
         # Player Sprite Setup
         self.scene.add_sprite_list("Wiz")
@@ -105,6 +117,11 @@ class GameScreen(arcade.View):
     def on_update(self, delta_time):
         self.pe1.update()
         self.pe2.update()
+
+
+        self.moving_platform_2 = button_platform(self.scene, self.wizard_sprite, self.familiar_sprite,
+                                                 "Button 1", self.moving_platform_2,
+                                                 555, 455, self.moving_vel)
 
         self.moving_platform_1, self.move_plat_1_up, self.move_plat_1_down =\
             lever_platform(self.scene, self.familiar_sprite,
