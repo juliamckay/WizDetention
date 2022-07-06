@@ -2,7 +2,7 @@ import arcade
 import arcade.gui
 from command import *
 from constants import *
-
+from env_interaction import *
 
 class GameScreen(arcade.View):
     def __init__(self):
@@ -106,27 +106,15 @@ class GameScreen(arcade.View):
         self.pe1.update()
         self.pe2.update()
 
-        #See if player has collided w lever from "Lever 1" layer
-        if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Lever 1"]):
-            self.move_plat_1_up = not self.move_plat_1_up
-            self.move_plat_1_down = not self.move_plat_1_down
-        if arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Lever 1"]):
-            self.move_plat_1_up = not self.move_plat_1_up
-            self.move_plat_1_down = not self.move_plat_1_down
+        self.moving_platform_1, self.move_plat_1_up, self.move_plat_1_down =\
+            lever_platform(self.scene, self.familiar_sprite,
+                       "Lever 1", self.moving_platform_1, self.move_plat_1_up,
+                       self.move_plat_1_down, 380, 250, self.moving_vel)
 
-        #If lever is pressed, move platform
-        if self.move_plat_1_down:
-            # Adding moving velocity in moving platform
-            self.moving_platform_1.center_y -= self.moving_vel
-            # Stop once you reach bottom
-            if self.moving_platform_1.center_y < 250:
-                self.moving_platform_1.center_y = 250
-        if self.move_plat_1_up:
-            # Adding moving velocity in moving platform
-            self.moving_platform_1.center_y += self.moving_vel
-            # Stop once you reach top
-            if self.moving_platform_1.center_y > 380:
-                self.moving_platform_1.center_y = 380
+        self.moving_platform_1, self.move_plat_1_up, self.move_plat_1_down = \
+            lever_platform(self.scene, self.wizard_sprite,
+                           "Lever 1", self.moving_platform_1, self.move_plat_1_up,
+                           self.move_plat_1_down, 380, 250, self.moving_vel)
 
         #See if player has collided w anything from the Dont Touch layer
         if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Dont Touch"]):
