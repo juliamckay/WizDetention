@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="added button controlled moving platforms">
-      <change afterPath="$PROJECT_DIR$/src/Wizard-Detention/quit_screen.py" afterDir="false" />
+    <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="added level end door which connects to quit game screen (its ugly rn but ill fix it later)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0_map.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0_map.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0_map.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0_map.tmx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Wizard-Detention/game.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="jules2" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
