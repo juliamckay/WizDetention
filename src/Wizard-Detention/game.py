@@ -27,14 +27,14 @@ class GameScreen(arcade.View):
         self.familiar_sprite = None
 
         #Moving Platform Sprites
+        self.player_on_lever = False
+
         self.moving_platform_1 = None
         self.moving_vel = 2
         self.move_plat_1_up = True
         self.move_plat_1_down = False
 
         self.moving_platform_2 = None
-        self.move_plat_2_up = True
-        self.move_plat_2_down = False
 
         # Physics Engine
         self.pe1 = None
@@ -118,19 +118,20 @@ class GameScreen(arcade.View):
         self.pe1.update()
         self.pe2.update()
 
-
+        #check for collision with buttons
         self.moving_platform_2 = button_platform(self.scene, self.wizard_sprite, self.familiar_sprite,
                                                  "Button 1", self.moving_platform_2,
                                                  555, 455, self.moving_vel)
 
-        self.moving_platform_1, self.move_plat_1_up, self.move_plat_1_down =\
-            lever_platform(self.scene, self.familiar_sprite,
-                       "Lever 1", self.moving_platform_1, self.move_plat_1_up,
+        #check for collision with levers
+        self.player_on_lever, self.move_plat_1_up, self.move_plat_1_down = \
+            levers_check_col(self.scene, "Lever 1", self.wizard_sprite, self.familiar_sprite,
+                             self.move_plat_1_up, self.move_plat_1_down, self.player_on_lever)
+        #move platforms accordingly
+        self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
                        self.move_plat_1_down, 380, 250, self.moving_vel)
 
-        self.moving_platform_1, self.move_plat_1_up, self.move_plat_1_down = \
-            lever_platform(self.scene, self.wizard_sprite,
-                           "Lever 1", self.moving_platform_1, self.move_plat_1_up,
+        self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
                            self.move_plat_1_down, 380, 250, self.moving_vel)
 
         #See if player has collided w anything from the Dont Touch layer
