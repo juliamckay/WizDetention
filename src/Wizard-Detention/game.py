@@ -3,6 +3,7 @@ import arcade.gui
 from command import *
 from constants import *
 from env_interaction import *
+from quit_screen import QuitScreen
 
 class GameScreen(arcade.View):
     def __init__(self):
@@ -56,6 +57,9 @@ class GameScreen(arcade.View):
                 "use_spatial_hash": True,
             },
             "Button 1": {
+                "use_spatial_hash": True,
+            },
+            "Door": {
                 "use_spatial_hash": True,
             },
         }
@@ -139,3 +143,10 @@ class GameScreen(arcade.View):
             self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
         if arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Dont Touch"]):
             self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
+
+        #check if BOTH players have collided with door, advance to next level
+        #for now it just goes to quit screen since there is no level 2 yet
+        if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Door"]) and \
+            arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Door"]):
+            end_screen = QuitScreen()
+            self.window.show_view(end_screen)
