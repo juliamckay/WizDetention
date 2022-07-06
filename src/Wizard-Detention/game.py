@@ -39,6 +39,9 @@ class GameScreen(arcade.View):
             "Platforms": {
                 "use_spatial_hash": True,
             },
+            "Dont Touch": {
+                "use_spatial_hash": True,
+            },
         }
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
@@ -87,3 +90,9 @@ class GameScreen(arcade.View):
     def on_update(self, delta_time):
         self.pe1.update()
         self.pe2.update()
+
+        #See if player has collided w anything from the Dont Touch layer
+        if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Dont Touch"]):
+            self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
+        if arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Dont Touch"]):
+            self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
