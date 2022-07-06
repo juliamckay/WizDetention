@@ -26,6 +26,11 @@ class GameScreen(arcade.View):
         self.wizard_sprite = None
         self.familiar_sprite = None
 
+        #Moving Platform Sprites
+        self.moving_platform_1 = None
+        self.moving_vel = 2
+        self.move_plat_1 = True
+
         # Physics Engine
         self.pe1 = None
         self.pe2 = None
@@ -46,6 +51,12 @@ class GameScreen(arcade.View):
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        #Adding Moving Platform Sprite
+        self.moving_platform_1 = arcade.Sprite("Assets\\Sprites\\moving_platform_01.png", PLATFORM_SCALING)
+        self.moving_platform_1.center_x = 1175
+        self.moving_platform_1.center_y = 380
+        self.scene.add_sprite("Platforms", self.moving_platform_1)
 
         # Player Sprite Setup
         self.scene.add_sprite_list("Wiz")
@@ -90,6 +101,14 @@ class GameScreen(arcade.View):
     def on_update(self, delta_time):
         self.pe1.update()
         self.pe2.update()
+
+        #If lever is pressed, move platform
+        if self.move_plat_1:
+            # Adding moving velocity in moving platform
+            self.moving_platform_1.center_y -= self.moving_vel
+            # Stop once you reach bottom
+            if self.moving_platform_1.center_y < 250 or self.moving_platform_1.center_y > 380:
+                self.move_plat_1 = False
 
         #See if player has collided w anything from the Dont Touch layer
         if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Dont Touch"]):
