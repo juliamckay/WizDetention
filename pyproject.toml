@@ -1,25 +1,30 @@
 [build-system]
 requires = [
     "setuptools>=61.0",
-    "arcade>=2.6.15"
+    "wheel"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "Wizard-Detention"
-version = "0.0.1"
+name = "Wiz_Detention"
+version = "0.0.5"
 authors = [
-  { name="Julia McKay, Chandler Fox, and Audrey DeHoog", email="adehoog@ufl.edu" },
+  { name="Julia McKay", email="julia@ufl.edu" },
+  { name="Chandler Fox", email="chandler@ufl.edu" },
+  { name="Audrey DeHoog", email="adehoog@ufl.edu" },
 ]
-description = "A small example package"
+description = "A python game"
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+]
+dependencies = [
+    "arcade>=2.6"
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/juliamckay/WizDetention"
+"Github" = "https://github.com/juliamckay/WizDetention"

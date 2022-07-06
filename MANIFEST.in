@@ -1,4 +1,5 @@
 include README.md
 include LICENSE
 include requirements.txt
-include src/Maps/*
+include src/Wiz_Detention/Assets/Maps/*
+include src/Wiz_Detention/Assets/Sprites/*
