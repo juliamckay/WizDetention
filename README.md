@@ -1,12 +1,21 @@
 # Wizard Detention
 
-### Description
+### About
+
+#### Description
 A 2D puzzle platformer where you play as a stubborn wizarding school student and their familiar.
 They have been banished to the Detention Dimension for bad behavior.
 The wizard and their familiar must work together to navigate the various puzzles within the Detention Dimension and find
 a way to escape or be locked in detention forever!
 
-### Commands
+#### How To Play
+Control with wizard with wad (w to jump).
+Control the cat with the arrow keys (up arrow to jump).
+Touch blue boxes and move them into the red zones with wad to make new platforms.
+
+### Installation 
+
+#### Commands
 Build the scripts:
 ```
 py -m build
@@ -46,9 +55,11 @@ WizDetention/
 │       ├── __init__.py
 │       ├── command.py
 │       ├── constants.py
+│       ├── env_interaction.py
 │       ├── game.py
 │       ├── menu_screen.py
-│       └── open_window.py
+│       ├── open_window.py
+│       └── quit_screen.py
 └── tests/
 ```
 

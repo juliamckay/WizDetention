@@ -5,6 +5,7 @@ from constants import *
 from env_interaction import *
 from quit_screen import QuitScreen
 
+
 class GameScreen(arcade.View):
     def __init__(self):
         """Create the Window here and Declare game variables"""
@@ -18,6 +19,8 @@ class GameScreen(arcade.View):
 
         # Variable Declarations
         self.ih = None
+        self.interacting = False
+        self.in_place = False
 
         # Game screen
         self.tile_map = None
@@ -27,7 +30,12 @@ class GameScreen(arcade.View):
         self.wizard_sprite = None
         self.familiar_sprite = None
 
-        #Moving Platform Sprites
+        # Interactable Object Sprites
+        self.interact_box = None
+        self.stop_interact_area = None
+        self.new_box = None
+
+        # Moving Platform Sprites
         self.player_on_lever = False
 
         self.moving_platform_1 = None
@@ -40,6 +48,7 @@ class GameScreen(arcade.View):
         # Physics Engine
         self.pe1 = None
         self.pe2 = None
+        self.pe3 = None
         self.ty = None
 
     def setup(self):
@@ -67,7 +76,7 @@ class GameScreen(arcade.View):
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        #Adding Moving Platform Sprite
+        # Adding Moving Platform Sprite
         self.moving_platform_1 = arcade.Sprite("Assets\\Sprites\\moving_platform_01.png", PLATFORM_SCALING)
         self.moving_platform_1.center_x = 1175
         self.moving_platform_1.center_y = 380
@@ -78,7 +87,22 @@ class GameScreen(arcade.View):
         self.moving_platform_2.center_y = 455
         self.scene.add_sprite("Platforms", self.moving_platform_2)
 
+        # Adding interactable objects
+        self.interact_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
+        self.interact_box.center_x = 400
+        self.interact_box.center_y = 600
+
+        self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
+        self.stop_interact_area.center_x = 570
+        self.stop_interact_area.center_y = 570
+
+        self.scene.add_sprite("Interacts", self.interact_box)
+        self.scene.add_sprite("Interacts", self.stop_interact_area)
+        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=GRAVITY,
+                                                  walls=self.scene["Platforms"])
+
         # Player Sprite Setup
+        self.scene.add_sprite_list("Interacts")
         self.scene.add_sprite_list("Wiz")
         self.scene.add_sprite_list("Cat")
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
@@ -119,34 +143,57 @@ class GameScreen(arcade.View):
             command.undo()
 
     def on_update(self, delta_time):
-        self.pe1.update()
         self.pe2.update()
 
-        #check for collision with buttons
+        if self.interacting:
+            self.pe3.update()
+        else:
+            self.pe1.update()
+
+        # check for collision with inter actable objects
+        interact = arcade.check_for_collision(self.wizard_sprite, self.interact_box)
+        if interact and not self.in_place:
+            self.interacting = True
+            self.ih = InputHandler(self.interact_box, self.familiar_sprite)
+
+        # stops object interaction
+        finish_interact = arcade.check_for_collision(self.interact_box, self.stop_interact_area)
+        if finish_interact:
+            self.interacting = False
+            self.in_place = True
+            self.new_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
+            self.new_box.center_x = self.interact_box.center_x
+            self.new_box.center_y = self.interact_box.center_y
+            self.scene.add_sprite("Platforms", self.new_box)
+            self.interact_box.remove_from_sprite_lists()
+            self.stop_interact_area.remove_from_sprite_lists()
+            self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite)
+
+        # check for collision with buttons
         self.moving_platform_2 = button_platform(self.scene, self.wizard_sprite, self.familiar_sprite,
                                                  "Button 1", self.moving_platform_2,
                                                  555, 455, self.moving_vel)
 
-        #check for collision with levers
+        # check for collision with levers
         self.player_on_lever, self.move_plat_1_up, self.move_plat_1_down = \
             levers_check_col(self.scene, "Lever 1", self.wizard_sprite, self.familiar_sprite,
                              self.move_plat_1_up, self.move_plat_1_down, self.player_on_lever)
-        #move platforms accordingly
+        # move platforms accordingly
         self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
-                       self.move_plat_1_down, 380, 250, self.moving_vel)
+                                                self.move_plat_1_down, 380, 250, self.moving_vel)
 
         self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
-                           self.move_plat_1_down, 380, 250, self.moving_vel)
+                                                self.move_plat_1_down, 380, 250, self.moving_vel)
 
-        #See if player has collided w anything from the Dont Touch layer
+        # See if player has collided w anything from the Dont Touch layer
         if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Dont Touch"]):
             self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
         if arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Dont Touch"]):
             self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
 
-        #check if BOTH players have collided with door, advance to next level
-        #for now it just goes to quit screen since there is no level 2 yet
+        # check if BOTH players have collided with door, advance to next level
+        # for now it just goes to quit screen since there is no level 2 yet
         if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Door"]) and \
-            arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Door"]):
+                arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Door"]):
             end_screen = QuitScreen()
             self.window.show_view(end_screen)
