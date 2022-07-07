@@ -1,7 +1,6 @@
 import arcade
 from abc import abstractmethod
 import arcade.gui
-import itertools
 from constants import *
 from env_interaction import *
 from quit_screen import QuitScreen
@@ -28,18 +27,22 @@ class GameScreen(arcade.View):
         self.scene = None
 
         # Player Sprites
-        self.wizard_sprite = None
-        self.wiz_vel = None
-        self.familiar_sprite = None
-        self.fam_vel = None
+        self.wizard = None
+        # self.wizard_sprite = None
+        self.familiar = None
+        # self.familiar_sprite = None
 
         # Interactable Object Sprites
 
         # Used for spell
         self.target: arcade.Sprite = None
 
+        self.target_anim_sprite: arcade.Sprite = None
+        self.target_anim = []
+        self.curr_targ_anim_count = 0
+        self.cooldown = 0
+
         self.interact_box = None
-        self.box_vel = None
         # self.stop_interact_area = None
         # self.new_box = None
 
@@ -107,28 +110,37 @@ class GameScreen(arcade.View):
         self.scene.add_sprite_list("Cat")
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
 
-        self.wizard_sprite = arcade.Sprite("Assets\\Sprites\\R_witch_stationary.png", WIZARD_SCALING)
-        self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
-        self.wiz_vel = [0, 0]
-        self.scene.add_sprite("Wiz", self.wizard_sprite)
+        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        self.wizard.position = (SPAWN_X, SPAWN_Y)
+        self.scene.add_sprite("Wiz", self.wizard)
 
-        self.familiar_sprite = arcade.Sprite("Assets\\Sprites\\cat05.png", FAMILIAR_SCALING)
-        self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
-        self.fam_vel = [0, 0]
-        self.scene.add_sprite("Cat", self.familiar_sprite)
+        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
-        self.interact_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
+        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", "Assets/Sprites/Targets/TargetT1", 0.15)
         self.interact_box.center_x = 400
         self.interact_box.center_y = 600
-        self.box_vel = [0, 0]
         self.scene.add_sprite("Interacts", self.interact_box)
 
-        self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite, self)
+        # Load textures for when targeting is occurring
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
+            self.target_anim.append(texture)
+        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
+        self.target_anim_sprite.alpha = 0
+        self.scene.add_sprite("Targeting", self.target_anim_sprite)
 
-        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard_sprite, gravity_constant=GRAVITY,
+        # Input Handler
+        self.ih = InputHandler(self.wizard, self.familiar, self)
+
+        # Physics Engines
+        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar_sprite, gravity_constant=GRAVITY,
+        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
@@ -154,26 +166,44 @@ class GameScreen(arcade.View):
             command.undo()
 
     def on_update(self, delta_time):
-        self.pe2.update()
         self.pe1.update()
+        if self.pe1.can_jump():
+            self.wizard.jumping = False
+        else:
+            self.wizard.jumping = True
+
+        self.pe2.update()
+        if self.pe2.can_jump():
+            self.familiar.jumping = False
+        else:
+            self.familiar.jumping = True
+
         self.pe3.update()
 
         # Check for if target is within vision of player character
         # For now, a simple within-range check around the wizard for potential targets
         if self.target:
-            if(arcade.get_distance(self.wizard_sprite.center_x, self.wizard_sprite.center_y,
-                                   self.target.center_x, self.target.center_y) > 100):
+            # self.play_target_animation(delta_time)
+            self.target_anim_sprite.position = self.target.position
+            if(arcade.get_distance(self.wizard.center_x, self.wizard.center_y,
+                                   self.target.center_x, self.target.center_y) > 200):
                 # Halt it's movement
                 self.target.change_x = 0
                 self.target.change_y = 0
 
                 # Deselect the target
+                self.target_anim_sprite.alpha = 0
                 self.target = None
+            else:
+                self.play_target_animation(delta_time)
         else:
+            # Select the target
             for target in self.scene["Interacts"]:
-                if(arcade.get_distance(self.wizard_sprite.center_x, self.wizard_sprite.center_y,
+                if(arcade.get_distance(self.wizard.center_x, self.wizard.center_y,
                                        target.center_x, target.center_y) < 100):
                     self.target = target
+                    self.target_anim_sprite.position = self.target.position
+                    self.target_anim_sprite.alpha = 255
                     break
 
         # check for collision with interactable objects
@@ -195,13 +225,13 @@ class GameScreen(arcade.View):
         #    self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite)
 
         # check for collision with buttons
-        self.moving_platform_2 = button_platform(self.scene, self.wizard_sprite, self.familiar_sprite,
+        self.moving_platform_2 = button_platform(self.scene, self.wizard, self.familiar,
                                                  "Button 1", self.moving_platform_2,
                                                  555, 455, self.moving_vel)
 
         # check for collision with levers
         self.player_on_lever, self.move_plat_1_up, self.move_plat_1_down = \
-            levers_check_col(self.scene, "Lever 1", self.wizard_sprite, self.familiar_sprite,
+            levers_check_col(self.scene, "Lever 1", self.wizard, self.familiar,
                              self.move_plat_1_up, self.move_plat_1_down, self.player_on_lever)
         # move platforms accordingly
         self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
@@ -211,15 +241,15 @@ class GameScreen(arcade.View):
                                                 self.move_plat_1_down, 380, 250, self.moving_vel)
 
         # See if player has collided w anything from the Don't Touch layer
-        if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Dont Touch"]):
-            self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
-        if arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Dont Touch"]):
-            self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]):
+            self.wizard.position = (SPAWN_X, SPAWN_Y)
+        if arcade.check_for_collision_with_list(self.familiar, self.scene["Dont Touch"]):
+            self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
 
         # check if BOTH players have collided with door, advance to next level
         # for now it just goes to quit screen since there is no level 2 yet
-        if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Door"]) and \
-                arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Door"]):
+        if arcade.check_for_collision_with_list(self.wizard, self.scene["Door"]) and \
+                arcade.check_for_collision_with_list(self.familiar, self.scene["Door"]):
             end_screen = QuitScreen()
             self.window.show_view(end_screen)
 
@@ -228,7 +258,67 @@ class GameScreen(arcade.View):
     def get_target_sprite(self):
         return self.target
 
+    def play_target_animation(self, delta_time):
+        self.cooldown += delta_time
+        if self.cooldown > 0.1:
+            self.target_anim_sprite.texture = self.target_anim[self.curr_targ_anim_count]
+            self.curr_targ_anim_count = (self.curr_targ_anim_count + 1) % 4
+            self.cooldown = 0
+
     # endregion
+
+
+def load_texture_pair(filename):
+    """Load a texture pair from the file at filename"""
+    return [
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, flipped_horizontally=True),
+    ]
+
+
+class PlayerCharacter(arcade.Sprite):
+    """Character class for player sprites with additional sprites"""
+    def __init__(self, main_path, scaling):
+        super().__init__()
+
+        self.character_face_direction = RIGHT_FACE
+
+        # Used for flipping between image sequences
+        self.cur_texture = 0
+        self.scale = scaling
+
+        # State variables
+        self.jumping = False
+        # self.climbing = False
+        # self.on_ladder = False
+
+        # --- Load the textures ---
+
+        # Load simple texture pairs
+        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
+        # self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
+        # self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
+
+        # Set current texture and hitbox
+        self.texture = self.idle_texture_pair[0]
+        self.hit_box = self.texture.hit_box_points
+
+
+class MagicObject(arcade.Sprite):
+    def __init__(self, filepath, target_path, scaling):
+        super().__init__()
+
+        self.scale = scaling
+        self.texture = arcade.load_texture(f"{filepath}")
+        self.hit_box = self.texture.hit_box_points
+
+        self.center_sprite = arcade.Sprite()
+        self.curr_texture = 0
+
+    def update_animation(self, delta_time: float = 1 / 60):
+        # Only real animation is the targeting one
+        self.curr_texture = (self.curr_texture + 1) % 4
+        self.center_sprite.texture = self.target_anim[self.curr_texture]
 
 
 # region InputHandler
@@ -278,11 +368,13 @@ class Command:
 
 class JumpCommand(Command):
     """Makes the character sprite jump"""
-    def __init__(self, sprite: arcade.Sprite):
+    def __init__(self, sprite: PlayerCharacter):
+        super().__init__(sprite)
         self.sprite = sprite
 
     def __call__(self):
-        self.sprite.change_y = PLAYER_JS
+        if not self.sprite.jumping:
+            self.sprite.change_y = PLAYER_JS
 
     def undo(self):
         self.sprite.change_y = 0
@@ -291,7 +383,7 @@ class JumpCommand(Command):
 class MoveLeftCommand(Command):
     """Makes the character sprite move left"""
     def __init__(self, sprite: arcade.Sprite):
-        self.sprite = sprite
+        super().__init__(sprite)
 
     def __call__(self):
         self.sprite.change_x = -PLAYER_MS
@@ -303,7 +395,7 @@ class MoveLeftCommand(Command):
 class MoveRightCommand(Command):
     """Makes the character sprite move right"""
     def __init__(self, sprite: arcade.Sprite):
-        self.sprite = sprite
+        super().__init__(sprite)
 
     def __call__(self):
         self.sprite.change_x = PLAYER_MS
@@ -315,7 +407,7 @@ class MoveRightCommand(Command):
 class SpellCommand(Command):
     """Finds the target and makes the player stop moving while allowing them to move the target"""
     def __init__(self, sprite: arcade.Sprite, ih: InputHandler, view: GameScreen):
-        self.sprite = sprite
+        super().__init__(sprite)
         self.ih = ih
         self.view = view
 
