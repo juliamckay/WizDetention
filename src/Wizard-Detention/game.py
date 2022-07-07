@@ -1,6 +1,7 @@
 import arcade
+from abc import abstractmethod
 import arcade.gui
-from command import *
+import itertools
 from constants import *
 from env_interaction import *
 from quit_screen import QuitScreen
@@ -28,12 +29,19 @@ class GameScreen(arcade.View):
 
         # Player Sprites
         self.wizard_sprite = None
+        self.wiz_vel = None
         self.familiar_sprite = None
+        self.fam_vel = None
 
         # Interactable Object Sprites
+
+        # Used for spell
+        self.target: arcade.Sprite = None
+
         self.interact_box = None
-        self.stop_interact_area = None
-        self.new_box = None
+        self.box_vel = None
+        # self.stop_interact_area = None
+        # self.new_box = None
 
         # Moving Platform Sprites
         self.player_on_lever = False
@@ -87,19 +95,11 @@ class GameScreen(arcade.View):
         self.moving_platform_2.center_y = 455
         self.scene.add_sprite("Platforms", self.moving_platform_2)
 
-        # Adding interactable objects
-        self.interact_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
-        self.interact_box.center_x = 400
-        self.interact_box.center_y = 600
+        # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
+        # self.stop_interact_area.center_x = 570
+        # self.stop_interact_area.center_y = 570
 
-        self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
-        self.stop_interact_area.center_x = 570
-        self.stop_interact_area.center_y = 570
-
-        self.scene.add_sprite("Interacts", self.interact_box)
-        self.scene.add_sprite("Interacts", self.stop_interact_area)
-        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=GRAVITY,
-                                                  walls=self.scene["Platforms"])
+        # self.scene.add_sprite("Interacts", self.stop_interact_area)
 
         # Player Sprite Setup
         self.scene.add_sprite_list("Interacts")
@@ -109,18 +109,28 @@ class GameScreen(arcade.View):
 
         self.wizard_sprite = arcade.Sprite("Assets\\Sprites\\R_witch_stationary.png", WIZARD_SCALING)
         self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
+        self.wiz_vel = [0, 0]
         self.scene.add_sprite("Wiz", self.wizard_sprite)
 
         self.familiar_sprite = arcade.Sprite("Assets\\Sprites\\cat05.png", FAMILIAR_SCALING)
         self.familiar_sprite.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.fam_vel = [0, 0]
         self.scene.add_sprite("Cat", self.familiar_sprite)
 
-        self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite)
+        # Adding interactable objects
+        self.interact_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
+        self.interact_box.center_x = 400
+        self.interact_box.center_y = 600
+        self.box_vel = [0, 0]
+        self.scene.add_sprite("Interacts", self.interact_box)
+
+        self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite, self)
 
         self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard_sprite, gravity_constant=GRAVITY,
-                                                  walls=self.scene["Platforms"])
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar_sprite, gravity_constant=GRAVITY,
-                                                  walls=self.scene["Platforms"])
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
     def on_show_view(self):
         self.setup()
@@ -132,42 +142,57 @@ class GameScreen(arcade.View):
         self.scene.draw()
 
     def on_key_press(self, key, mods):
-        # Check command.py for commands
+        """Delegated to the input handler"""
         command = self.ih.handle_input(key)
         if command:
             command()
 
     def on_key_release(self, key, mods):
+        """Delegated to the input handler"""
         command = self.ih.handle_input(key)
         if command:
             command.undo()
 
     def on_update(self, delta_time):
         self.pe2.update()
+        self.pe1.update()
+        self.pe3.update()
 
-        if self.interacting:
-            self.pe3.update()
+        # Check for if target is within vision of player character
+        # For now, a simple within-range check around the wizard for potential targets
+        if self.target:
+            if(arcade.get_distance(self.wizard_sprite.center_x, self.wizard_sprite.center_y,
+                                   self.target.center_x, self.target.center_y) > 100):
+                # Halt it's movement
+                self.target.change_x = 0
+                self.target.change_y = 0
+
+                # Deselect the target
+                self.target = None
         else:
-            self.pe1.update()
+            for target in self.scene["Interacts"]:
+                if(arcade.get_distance(self.wizard_sprite.center_x, self.wizard_sprite.center_y,
+                                       target.center_x, target.center_y) < 100):
+                    self.target = target
+                    break
 
-        # check for collision with inter actable objects
-        interact = arcade.check_for_collision(self.wizard_sprite, self.interact_box)
-        if interact and not self.in_place:
-            self.interacting = True
-            self.ih = InputHandler(self.interact_box, self.familiar_sprite)
+        # check for collision with interactable objects
+        # interact = arcade.check_for_collision(self.wizard_sprite, self.interact_box)
+        # if interact and not self.in_place:
+        #    self.interacting = True
 
         # stops object interaction
-        finish_interact = arcade.check_for_collision(self.interact_box, self.stop_interact_area)
-        if finish_interact:
-            self.interacting = False
-            self.in_place = True
-            self.new_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
-            self.new_box.center_x = self.interact_box.center_x
-            self.new_box.center_y = self.interact_box.center_y
-            self.scene.add_sprite("Platforms", self.new_box)
-            self.interact_box.remove_from_sprite_lists()
-            self.stop_interact_area.remove_from_sprite_lists()
-            self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite)
+        # finish_interact = arcade.check_for_collision(self.interact_box, self.stop_interact_area)
+        # if finish_interact:
+        #    self.interacting = False
+        #    self.in_place = True
+        #    self.new_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
+        #    self.new_box.center_x = self.interact_box.center_x
+        #    self.new_box.center_y = self.interact_box.center_y
+        #    self.scene.add_sprite("Platforms", self.new_box)
+        #    self.interact_box.remove_from_sprite_lists()
+        #    self.stop_interact_area.remove_from_sprite_lists()
+        #    self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite)
 
         # check for collision with buttons
         self.moving_platform_2 = button_platform(self.scene, self.wizard_sprite, self.familiar_sprite,
@@ -185,7 +210,7 @@ class GameScreen(arcade.View):
         self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
                                                 self.move_plat_1_down, 380, 250, self.moving_vel)
 
-        # See if player has collided w anything from the Dont Touch layer
+        # See if player has collided w anything from the Don't Touch layer
         if arcade.check_for_collision_with_list(self.wizard_sprite, self.scene["Dont Touch"]):
             self.wizard_sprite.position = (SPAWN_X, SPAWN_Y)
         if arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Dont Touch"]):
@@ -197,3 +222,124 @@ class GameScreen(arcade.View):
                 arcade.check_for_collision_with_list(self.familiar_sprite, self.scene["Door"]):
             end_screen = QuitScreen()
             self.window.show_view(end_screen)
+
+    # region helpers
+
+    def get_target_sprite(self):
+        return self.target
+
+    # endregion
+
+
+# region InputHandler
+class InputHandler:
+    """Handles Input based off a given key press"""
+    def __init__(self, wiz: arcade.Sprite, cat: arcade.Sprite, view: GameScreen):
+        """To add a command, add the key to press to the list as well and assign the correct object constructor"""
+        self.commands = \
+            {
+                arcade.key.A: MoveLeftCommand(wiz),
+                arcade.key.D: MoveRightCommand(wiz),
+                arcade.key.W: JumpCommand(wiz),
+                arcade.key.S: SpellCommand(wiz, self, view),
+                arcade.key.LEFT: MoveLeftCommand(cat),
+                arcade.key.RIGHT: MoveRightCommand(cat),
+                arcade.key.UP: JumpCommand(cat)
+            }
+
+    def handle_input(self, key_pressed):
+        """Simply picks the command"""
+        if key_pressed in self.commands:
+            return self.commands[key_pressed]
+        return None
+
+    def bind(self, key_pressed, command):
+        if key_pressed in self.commands:
+            self.commands[key_pressed] = command
+
+    def unbind(self, key_pressed):
+        if key_pressed in self.commands:
+            self.commands[key_pressed] = None
+
+
+class Command:
+    """An abstract class used for all command classes"""
+    def __init__(self, sprite: arcade.Sprite):
+        self.sprite = sprite
+
+    @abstractmethod
+    def __call__(self):
+        pass
+
+    @abstractmethod
+    def undo(self):
+        pass
+
+
+class JumpCommand(Command):
+    """Makes the character sprite jump"""
+    def __init__(self, sprite: arcade.Sprite):
+        self.sprite = sprite
+
+    def __call__(self):
+        self.sprite.change_y = PLAYER_JS
+
+    def undo(self):
+        self.sprite.change_y = 0
+
+
+class MoveLeftCommand(Command):
+    """Makes the character sprite move left"""
+    def __init__(self, sprite: arcade.Sprite):
+        self.sprite = sprite
+
+    def __call__(self):
+        self.sprite.change_x = -PLAYER_MS
+
+    def undo(self):
+        self.sprite.change_x = 0
+
+
+class MoveRightCommand(Command):
+    """Makes the character sprite move right"""
+    def __init__(self, sprite: arcade.Sprite):
+        self.sprite = sprite
+
+    def __call__(self):
+        self.sprite.change_x = PLAYER_MS
+
+    def undo(self):
+        self.sprite.change_x = 0
+
+
+class SpellCommand(Command):
+    """Finds the target and makes the player stop moving while allowing them to move the target"""
+    def __init__(self, sprite: arcade.Sprite, ih: InputHandler, view: GameScreen):
+        self.sprite = sprite
+        self.ih = ih
+        self.view = view
+
+    def __call__(self):
+        """Locks wizard movement and Calls a function back in game.py that returns the target sprite to move instead"""
+        # First, unbind wizard movements and halt all movement
+        self.sprite.change_x = 0
+        self.sprite.change_y = 0
+        self.ih.unbind(arcade.key.A)
+        self.ih.unbind(arcade.key.D)
+        self.ih.unbind(arcade.key.W)
+
+        # Find Target
+        target = self.view.get_target_sprite()
+        if not target:
+            return
+
+        # Adjust Movement Commands when target exists
+        self.ih.bind(arcade.key.A, MoveLeftCommand(target))
+        self.ih.bind(arcade.key.D, MoveRightCommand(target))
+
+    def undo(self):
+        self.ih.bind(arcade.key.W, JumpCommand(self.sprite))
+        self.ih.bind(arcade.key.A, MoveLeftCommand(self.sprite))
+        self.ih.bind(arcade.key.D, MoveRightCommand(self.sprite))
+
+# endregion
