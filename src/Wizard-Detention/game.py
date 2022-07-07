@@ -121,7 +121,7 @@ class GameScreen(arcade.View):
         self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", "Assets/Sprites/Targets/TargetT1", 0.15)
+        self.interact_box = arcade.Sprite("Assets/Sprites/blue_square.png", 0.15)
         self.interact_box.center_x = 400
         self.interact_box.center_y = 600
         self.scene.add_sprite("Interacts", self.interact_box)
@@ -150,6 +150,8 @@ class GameScreen(arcade.View):
 
     def on_draw(self):
         self.clear()
+        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
+        arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
         self.manager.draw()
         self.scene.draw()
 
@@ -302,23 +304,6 @@ class PlayerCharacter(arcade.Sprite):
         # Set current texture and hitbox
         self.texture = self.idle_texture_pair[0]
         self.hit_box = self.texture.hit_box_points
-
-
-class MagicObject(arcade.Sprite):
-    def __init__(self, filepath, target_path, scaling):
-        super().__init__()
-
-        self.scale = scaling
-        self.texture = arcade.load_texture(f"{filepath}")
-        self.hit_box = self.texture.hit_box_points
-
-        self.center_sprite = arcade.Sprite()
-        self.curr_texture = 0
-
-    def update_animation(self, delta_time: float = 1 / 60):
-        # Only real animation is the targeting one
-        self.curr_texture = (self.curr_texture + 1) % 4
-        self.center_sprite.texture = self.target_anim[self.curr_texture]
 
 
 # region InputHandler
