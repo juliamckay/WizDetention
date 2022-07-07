@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="Fixed some weird movement glitches">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="Added a way to Quit the game using the Esc key">
       <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Wizard-Detention/game.py" afterDir="false" />
     </list>
     <list id="e1ffef58-d93d-4365-9afd-62b2aa19f5d1" name="TargetSprites" comment="TargetSprites" />
@@ -161,7 +160,7 @@
       <workItem from="1657073403809" duration="1706000" />
       <workItem from="1657088622760" duration="1446000" />
       <workItem from="1657160543121" duration="636000" />
-      <workItem from="1657163271221" duration="19646000" />
+      <workItem from="1657163271221" duration="19892000" />
     </task>
     <task id="LOCAL-00001" summary="added lever control to moving platform">
       <created>1657076528418</created>
@@ -205,7 +204,14 @@
       <option name="project" value="LOCAL" />
       <updated>1657186344343</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added a way to Quit the game using the Esc key">
+      <created>1657186867136</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1657186867136</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -230,13 +236,14 @@
     <MESSAGE value="Spell System working as intended (fix glitches &amp; art updates necessary)" />
     <MESSAGE value="Added some tutorial text" />
     <MESSAGE value="Fixed some weird movement glitches" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed some weird movement glitches" />
+    <MESSAGE value="Added a way to Quit the game using the Esc key" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a way to Quit the game using the Esc key" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/WizDetention$Run.coverage" NAME="Run Coverage Results" MODIFIED="1657005954565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/WizDetention$menu_screen.coverage" NAME="menu_screen Coverage Results" MODIFIED="1656750847103" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/WizDetention$open_window__1_.coverage" NAME="open_window (1) Coverage Results" MODIFIED="1656928857390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/WizDetention$open_window.coverage" NAME="open_window Coverage Results" MODIFIED="1657186726302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/Wizard-Detention" />
+    <SUITE FILE_PATH="coverage/WizDetention$open_window.coverage" NAME="open_window Coverage Results" MODIFIED="1657187055852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/Wizard-Detention" />
     <SUITE FILE_PATH="coverage/WizDetention$open_window__2_.coverage" NAME="open_window (2) Coverage Results" MODIFIED="1656929232839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/WizardDetention" />
   </component>
 </project>

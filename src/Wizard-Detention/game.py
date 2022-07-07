@@ -156,6 +156,8 @@ class GameScreen(arcade.View):
         self.clear()
         arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
         arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
+        arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.PURPLE, 12, 80)
+        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.PURPLE, 12, 80)
         self.manager.draw()
         self.scene.draw()
 
