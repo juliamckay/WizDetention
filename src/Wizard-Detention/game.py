@@ -91,11 +91,15 @@ class GameScreen(arcade.View):
         self.moving_platform_1 = arcade.Sprite("Assets\\Sprites\\moving_platform_01.png", PLATFORM_SCALING)
         self.moving_platform_1.center_x = 1175
         self.moving_platform_1.center_y = 380
+        self.moving_platform_1.change_x = 0
+        self.moving_platform_1.change_y = 0
         self.scene.add_sprite("Platforms", self.moving_platform_1)
 
         self.moving_platform_2 = arcade.Sprite("Assets\\Sprites\\moving_platform_02_v.png", PLATFORM_SCALING_V)
         self.moving_platform_2.center_x = 600
         self.moving_platform_2.center_y = 455
+        self.moving_platform_2.change_x = 0
+        self.moving_platform_2.center_y = 0
         self.scene.add_sprite("Platforms", self.moving_platform_2)
 
         # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
@@ -345,7 +349,8 @@ class InputHandler:
                 arcade.key.LEFT: MoveLeftCommand(cat),
                 arcade.key.RIGHT: MoveRightCommand(cat),
                 arcade.key.UP: JumpCommand(cat),
-                arcade.key.R: Reset(view)
+                arcade.key.R: Reset(view),
+                arcade.key.ESCAPE: Quit(view)
             }
 
     def handle_input(self, key_pressed):
@@ -378,7 +383,7 @@ class Command:
 
 
 class JumpCommand(Command):
-    """Makes the character sprite jump"""
+    """Makes the PlayerCharacter jump"""
     def __init__(self, sprite: PlayerCharacter):
         super().__init__(sprite)
         self.sprite = sprite
@@ -392,7 +397,7 @@ class JumpCommand(Command):
 
 
 class MoveLeftCommand(Command):
-    """Makes the character sprite move left"""
+    """Makes the SpecialSprite move left"""
     def __init__(self, sprite: SpecialSprite):
         super().__init__(sprite)
         self.called = False
@@ -408,7 +413,7 @@ class MoveLeftCommand(Command):
 
 
 class MoveRightCommand(Command):
-    """Makes the character sprite move right"""
+    """Makes the SpecialSprite move right"""
     def __init__(self, sprite: SpecialSprite):
         super().__init__(sprite)
         self.called = False
@@ -454,12 +459,26 @@ class SpellCommand(Command):
 
 
 class Reset(Command):
+    """Reset the level mid-round"""
     def __init__(self, gs: GameScreen):
         super().__init__(None)
         self.gs = gs
 
     def __call__(self):
         self.gs.setup()
+
+    def undo(self):
+        return
+
+
+class Quit(Command):
+    """Quit the game mid-game"""
+    def __init__(self, gs: GameScreen):
+        super().__init__(None)
+        self.gs = gs
+
+    def __call__(self):
+        arcade.exit()
 
     def undo(self):
         return
