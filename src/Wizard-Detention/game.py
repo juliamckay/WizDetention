@@ -35,7 +35,7 @@ class GameScreen(arcade.View):
         # Interactable Object Sprites
 
         # Used for spell
-        self.target: arcade.Sprite = None
+        self.target: SpecialSprite = None
 
         self.target_anim_sprite: arcade.Sprite = None
         self.target_anim = []
@@ -121,7 +121,7 @@ class GameScreen(arcade.View):
         self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
-        self.interact_box = arcade.Sprite("Assets/Sprites/blue_square.png", 0.15)
+        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", 0.15)
         self.interact_box.center_x = 400
         self.interact_box.center_y = 600
         self.scene.add_sprite("Interacts", self.interact_box)
@@ -278,7 +278,13 @@ def load_texture_pair(filename):
     ]
 
 
-class PlayerCharacter(arcade.Sprite):
+class SpecialSprite(arcade.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.can_move = True
+
+
+class PlayerCharacter(SpecialSprite):
     """Character class for player sprites with additional sprites"""
     def __init__(self, main_path, scaling):
         super().__init__()
@@ -291,6 +297,7 @@ class PlayerCharacter(arcade.Sprite):
 
         # State variables
         self.jumping = False
+        self.can_move = True
         # self.climbing = False
         # self.on_ladder = False
 
@@ -306,10 +313,28 @@ class PlayerCharacter(arcade.Sprite):
         self.hit_box = self.texture.hit_box_points
 
 
+class MagicObject(SpecialSprite):
+    """Object class for casting spells on an object"""
+
+    def __init__(self, main_path, scaling):
+        super().__init__()
+
+        # Used for flipping between image sequences
+        self.cur_texture = 0
+        self.scale = scaling
+
+        # State variables
+        self.can_move = True
+
+        # Set current texture and hitbox
+        self.texture = arcade.load_texture(f"{main_path}")
+        self.hit_box = self.texture.hit_box_points
+
+
 # region InputHandler
 class InputHandler:
     """Handles Input based off a given key press"""
-    def __init__(self, wiz: arcade.Sprite, cat: arcade.Sprite, view: GameScreen):
+    def __init__(self, wiz: PlayerCharacter, cat: PlayerCharacter, view: GameScreen):
         """To add a command, add the key to press to the list as well and assign the correct object constructor"""
         self.commands = \
             {
@@ -319,7 +344,8 @@ class InputHandler:
                 arcade.key.S: SpellCommand(wiz, self, view),
                 arcade.key.LEFT: MoveLeftCommand(cat),
                 arcade.key.RIGHT: MoveRightCommand(cat),
-                arcade.key.UP: JumpCommand(cat)
+                arcade.key.UP: JumpCommand(cat),
+                arcade.key.R: Reset(view)
             }
 
     def handle_input(self, key_pressed):
@@ -339,7 +365,7 @@ class InputHandler:
 
 class Command:
     """An abstract class used for all command classes"""
-    def __init__(self, sprite: arcade.Sprite):
+    def __init__(self, sprite: SpecialSprite):
         self.sprite = sprite
 
     @abstractmethod
@@ -358,7 +384,7 @@ class JumpCommand(Command):
         self.sprite = sprite
 
     def __call__(self):
-        if not self.sprite.jumping:
+        if not self.sprite.jumping and self.sprite.can_move:
             self.sprite.change_y = PLAYER_JS
 
     def undo(self):
@@ -367,31 +393,39 @@ class JumpCommand(Command):
 
 class MoveLeftCommand(Command):
     """Makes the character sprite move left"""
-    def __init__(self, sprite: arcade.Sprite):
+    def __init__(self, sprite: SpecialSprite):
         super().__init__(sprite)
+        self.called = False
 
     def __call__(self):
-        self.sprite.change_x = -PLAYER_MS
+        self.called = self.sprite.can_move
+        if self.called:
+            self.sprite.change_x -= PLAYER_MS
 
     def undo(self):
-        self.sprite.change_x = 0
+        if self.called and self.sprite.can_move:
+            self.sprite.change_x += PLAYER_MS
 
 
 class MoveRightCommand(Command):
     """Makes the character sprite move right"""
-    def __init__(self, sprite: arcade.Sprite):
+    def __init__(self, sprite: SpecialSprite):
         super().__init__(sprite)
+        self.called = False
 
     def __call__(self):
-        self.sprite.change_x = PLAYER_MS
+        self.called = self.sprite.can_move
+        if self.called:
+            self.sprite.change_x += PLAYER_MS
 
     def undo(self):
-        self.sprite.change_x = 0
+        if self.called and self.sprite.can_move:
+            self.sprite.change_x -= PLAYER_MS
 
 
 class SpellCommand(Command):
     """Finds the target and makes the player stop moving while allowing them to move the target"""
-    def __init__(self, sprite: arcade.Sprite, ih: InputHandler, view: GameScreen):
+    def __init__(self, sprite: PlayerCharacter, ih: InputHandler, view: GameScreen):
         super().__init__(sprite)
         self.ih = ih
         self.view = view
@@ -401,9 +435,7 @@ class SpellCommand(Command):
         # First, unbind wizard movements and halt all movement
         self.sprite.change_x = 0
         self.sprite.change_y = 0
-        self.ih.unbind(arcade.key.A)
-        self.ih.unbind(arcade.key.D)
-        self.ih.unbind(arcade.key.W)
+        self.sprite.can_move = False
 
         # Find Target
         target = self.view.get_target_sprite()
@@ -418,5 +450,17 @@ class SpellCommand(Command):
         self.ih.bind(arcade.key.W, JumpCommand(self.sprite))
         self.ih.bind(arcade.key.A, MoveLeftCommand(self.sprite))
         self.ih.bind(arcade.key.D, MoveRightCommand(self.sprite))
+        self.sprite.can_move = True
 
+
+class Reset(Command):
+    def __init__(self, gs: GameScreen):
+        super().__init__(None)
+        self.gs = gs
+
+    def __call__(self):
+        self.gs.setup()
+
+    def undo(self):
+        return
 # endregion
