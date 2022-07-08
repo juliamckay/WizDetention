@@ -26,6 +26,7 @@ If there are any issues running WizardDetention_0.0.1.exe or WizardDetention.lau
 both can be run by double-clicking them in the file explorer.
 ### Links
 [Github] (https://github.com/juliamckay/WizDetention)
+[Gzipped Tar Archive] (https://github.com/juliamckay/WizDetention/tree/master/dist)
 
 ### WizardDetention.tar.gz Contents
 File Structure:
