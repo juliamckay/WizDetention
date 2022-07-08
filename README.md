@@ -27,6 +27,28 @@ both can be run by double-clicking them in the file explorer.
 ### Links
 [Github] (https://github.com/juliamckay/WizDetention)
 
+### WizardDetention.tar.gz Contents
+File Structure:
+```
+WizardDetention/
+├── src/
+│   ├── Assets/
+│   └── Wiz_Detention/
+│       ├── __init__.py
+│       ├── command.py
+│       ├── constants.py
+│       ├── env_interaction.py
+│       ├── game.py
+│       ├── menu_screen.py
+│       ├── open_window.py
+│       └── quit_screen.py
+├── installer.cfg
+├── README.md
+└── WizardDetention_0.0.1.exe
+```
+Source code is located within the src folder. 
+The PIP package build script is installer.cfg
+WizardDetention_0.0.1.exe is the executable for the installer.
 ### For the Devs
 Build the package:
 ```
