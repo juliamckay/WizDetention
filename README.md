@@ -10,7 +10,7 @@ a way to escape or be locked in detention forever!
 In the command prompt, navigate inside the nsis folder where WizardDetention_0.0.1.exe is located and run the installer
 with the command:
 ```
-start WizardDetention_[vesrion number]
+start WizardDetention_0.0.1
 ```
 
 Once the package is done installing, navigate to the folder you downloaded the game into where WizardDetention.launch.pyw 
