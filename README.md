@@ -16,9 +16,14 @@ start WizardDetention_0.0.1
 Once the package is done installing, navigate to the folder you downloaded the game into where WizardDetention.launch.pyw 
 is located and run the game with the command:
 ```
-WizardDetention.launch
+WizardDetention.launch.pyw
 ```
-
+Or use the full file path to execute the command:
+```
+[FILE PATH]\WizardDetention.launch.pyw
+```
+If there are any issues running WizardDetention_0.0.1.exe or WizardDetention.launch from the command prompt,
+both can be run by double-clicking them in the file explorer.
 ### Links
 [Github] (https://github.com/juliamckay/WizDetention)
 
