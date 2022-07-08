@@ -91,6 +91,8 @@ class GameScreen(arcade.View):
         self.moving_platform_1 = arcade.Sprite("Assets\\Sprites\\moving_platform_01.png", PLATFORM_SCALING)
         self.moving_platform_1.center_x = 1175
         self.moving_platform_1.center_y = 380
+        self.move_plat_1_up = True
+        self.move_plat_1_down = False
         self.moving_platform_1.change_x = 0
         self.moving_platform_1.change_y = 0
         self.scene.add_sprite("Platforms", self.moving_platform_1)
@@ -127,7 +129,7 @@ class GameScreen(arcade.View):
         # Adding interactable objects
         self.interact_box = MagicObject("Assets/Sprites/blue_square.png", 0.15)
         self.interact_box.center_x = 400
-        self.interact_box.center_y = 600
+        self.interact_box.center_y = 595
         self.scene.add_sprite("Interacts", self.interact_box)
 
         # Load textures for when targeting is occurring
