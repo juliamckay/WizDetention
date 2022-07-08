@@ -1,9 +1,9 @@
 import arcade
 from abc import abstractmethod
 import arcade.gui
-from constants import *
-from env_interaction import *
-from quit_screen import QuitScreen
+from src.constants import *
+from src.env_interaction import *
+from src.quit_screen import QuitScreen
 
 
 class GameScreen(arcade.View):
@@ -88,7 +88,7 @@ class GameScreen(arcade.View):
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         # Adding Moving Platform Sprite
-        self.moving_platform_1 = arcade.Sprite("Assets\\Sprites\\moving_platform_01.png", PLATFORM_SCALING)
+        self.moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
         self.moving_platform_1.center_x = 1175
         self.moving_platform_1.center_y = 380
         self.move_plat_1_up = True
@@ -97,7 +97,7 @@ class GameScreen(arcade.View):
         self.moving_platform_1.change_y = 0
         self.scene.add_sprite("Platforms", self.moving_platform_1)
 
-        self.moving_platform_2 = arcade.Sprite("Assets\\Sprites\\moving_platform_02_v.png", PLATFORM_SCALING_V)
+        self.moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
         self.moving_platform_2.center_x = 600
         self.moving_platform_2.center_y = 455
         self.moving_platform_2.change_x = 0
