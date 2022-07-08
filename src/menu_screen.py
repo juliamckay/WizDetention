@@ -1,7 +1,7 @@
 import arcade
 import arcade.gui
-from game import GameScreen
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.game import GameScreen
+from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class QuitButton(arcade.gui.UIFlatButton):

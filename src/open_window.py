@@ -1,6 +1,6 @@
 import arcade
-from menu_screen import MenuScreen
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.menu_screen import MenuScreen
+from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 def main():

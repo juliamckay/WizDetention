@@ -5,7 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="Added a way to Quit the game using the Esc key">
-      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Wizard-Detention/game.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MANIFEST.in" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Acid_01.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Acid_01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Acid_TS.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Acid_TS.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Dungeon_Tiles_01.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Dungeon_Tiles_01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Dungeon_Tiles_TS_1.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Dungeon_Tiles_TS_1.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0.tiled-project" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_0.tiled-project" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0.tiled-session" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_0.tiled-session" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0_map.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_0_map.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Level_0_map.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_0_map.tmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/Moving_Platforms_TS.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Moving_Platforms_TS.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/button.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/button.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/button_TS.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/button_TS.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/door.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/door.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/door_TS.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/door_TS.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Maps/moveable_platforms.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/moveable_platforms.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/Familiar/familiar_idle.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/Familiar/familiar_idle.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/Targets/TargetT1_0.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/Targets/TargetT1_0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/Targets/TargetT1_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/Targets/TargetT1_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/Targets/TargetT1_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/Targets/TargetT1_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/Targets/TargetT1_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/Targets/TargetT1_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/Wizard/wizard_idle.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/Wizard/wizard_idle.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/blue_square.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/blue_square.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/moving_platform_01.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/moving_platform_01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/moving_platform_02.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/moving_platform_02.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/moving_platform_02_v.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/moving_platform_02_v.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/Assets/Sprites/red_square.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Sprites/red_square.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/installer.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/command.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/command.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/env_interaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/env_interaction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/menu_screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/menu_screen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/open_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/open_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Wizard-Detention/quit_screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/quit_screen.py" afterDir="false" />
     </list>
     <list id="e1ffef58-d93d-4365-9afd-62b2aa19f5d1" name="TargetSprites" comment="TargetSprites" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,13 +60,13 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="jules2" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/Wizard-Detention/open_window.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/open_window.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -54,13 +91,13 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\cooki\PycharmProjects\WizDetention\src" />
       <recent name="C:\Users\Chandler Fox\PycharmProjects\WizDetention\src\Wizard-Detention\Assets\Sprites\Familiar" />
       <recent name="C:\Users\Chandler Fox\PycharmProjects\WizDetention\src\Wizard-Detention\Assets\Sprites\Wizard" />
-      <recent name="C:\Users\cooki\PycharmProjects\WizDetention\src" />
       <recent name="C:\Users\cooki\PycharmProjects\WizDetention\src\WizardDetention" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.open_window">
+  <component name="RunManager" selected="Python.open_window (1)">
     <configuration name="Run" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="WizDetention" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -74,7 +111,29 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="C:\Users\cooki\PycharmProjects\WizDetention\src\WizardDetention\open_window.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\cooki\PycharmProjects\WizDetention\src\open_window.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="menu_screen (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="WizDetention" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/menu_screen.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -96,7 +155,29 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="C:\Users\cooki\PycharmProjects\WizDetention\src\WizardDetention\menu_screen.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\cooki\PycharmProjects\WizDetention\src\menu_screen.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="open_window (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="WizDetention" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/open_window.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -128,17 +209,19 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.menu_screen (1)" />
+      <item itemvalue="Python.open_window (1)" />
       <item itemvalue="Python.menu_screen" />
       <item itemvalue="Python.open_window" />
       <item itemvalue="Python.Run" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.open_window" />
         <item itemvalue="Python.Run" />
+        <item itemvalue="Python.open_window" />
         <item itemvalue="Python.menu_screen" />
-        <item itemvalue="Python.open_window" />
-        <item itemvalue="Python.Run" />
+        <item itemvalue="Python.open_window (1)" />
+        <item itemvalue="Python.menu_screen (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -222,7 +305,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="pack-test" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -240,10 +335,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="Added a way to Quit the game using the Esc key" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/WizDetention$Run.coverage" NAME="Run Coverage Results" MODIFIED="1657005954565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/WizDetention$menu_screen.coverage" NAME="menu_screen Coverage Results" MODIFIED="1656750847103" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/WizDetention$open_window__1_.coverage" NAME="open_window (1) Coverage Results" MODIFIED="1656928857390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/WizDetention$open_window.coverage" NAME="open_window Coverage Results" MODIFIED="1657187055852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/Wizard-Detention" />
+    <SUITE FILE_PATH="coverage/WizDetention$menu_screen__1_.coverage" NAME="menu_screen (1) Coverage Results" MODIFIED="1657251106652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/WizDetention$open_window__2_.coverage" NAME="open_window (2) Coverage Results" MODIFIED="1656929232839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/WizardDetention" />
+    <SUITE FILE_PATH="coverage/WizDetention$Run.coverage" NAME="Run Coverage Results" MODIFIED="1656759529288" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/WizDetention$open_window.coverage" NAME="open_window Coverage Results" MODIFIED="1657243182498" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/Wizard-Detention" />
+    <SUITE FILE_PATH="coverage/WizDetention$open_window__1_.coverage" NAME="open_window (1) Coverage Results" MODIFIED="1657253017811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/WizDetention$menu_screen.coverage" NAME="menu_screen Coverage Results" MODIFIED="1656750847103" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
