@@ -1,16 +1,20 @@
 import arcade
 
 
-def levers_check_col(scene, layer, player1, player2, move_up, move_down, on_lever):
-    if arcade.check_for_collision_with_list(player1, scene[layer]) or \
-            arcade.check_for_collision_with_list(player2, scene[layer]):
+def levers_check_col(scene, layer, player1, player2, move_up, move_down, on_lever, flip_left, flip_right):
+    lever = arcade.check_for_collision_with_list(player1, scene[layer])
+    if not lever:
+        lever = arcade.check_for_collision_with_list(player2, scene[layer])
+    if lever:
         if not on_lever:
             move_up = not move_up
             move_down = not move_down
+            flip_left = not flip_left
+            flip_right = not flip_right
         on_lever = True
     else:
         on_lever = False
-    return on_lever, move_up, move_down
+    return on_lever, move_up, move_down, flip_left, flip_right, lever
 
 
 def lever_platform(platform, move_up, move_down, max_y, min_y, move_vel):

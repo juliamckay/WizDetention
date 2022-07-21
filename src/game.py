@@ -55,6 +55,13 @@ class GameScreen(arcade.View):
         self.acid_textures = []
         self.cur_texture = 0
 
+        # Levers
+        self.current_lever = None
+        self.flipped_right = None
+        self.flipped_left = None
+        self.lever_right = True
+        self.lever_left = False
+
         # Moving Platform Info
         self.lever_count = 0
         self.button_count = 0
@@ -158,9 +165,13 @@ class GameScreen(arcade.View):
         for i in range(1, self.lever_count + 1):
             current_plat = self.lever_plats[i-1]
             layer_name = "Lever " + str(i)
-            self.player_on_lever, current_plat[1], current_plat[2] = \
+            self.player_on_lever, current_plat[1], current_plat[2], self.lever_left, self.lever_right, self.current_lever= \
                 levers_check_col(self.scene, layer_name, self.wizard, self.familiar,
-                                 current_plat[1], current_plat[2], self.player_on_lever)
+                                 current_plat[1], current_plat[2], self.player_on_lever, self.lever_left, self.lever_right)
+            if self.lever_left and self.player_on_lever:
+                self.current_lever[0].texture = self.flipped_left
+            if self.lever_right and self.player_on_lever:
+                self.current_lever[0].texture = self.flipped_right
             #move platform accordingly
             current_plat[0] = lever_platform(current_plat[0], current_plat[1],
                                                 current_plat[2], current_plat[3], current_plat[4], self.moving_vel)
@@ -218,6 +229,11 @@ class LevelZero(GameScreen):
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        # Lever animation setup
+        self.levers_list = self.tile_map.sprite_lists.get("Lever 1")
+        self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
+        self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
 
         # Acid animation setup
         self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
