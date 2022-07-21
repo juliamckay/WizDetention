@@ -13,6 +13,9 @@ class GameScreen(arcade.View):
         super().__init__()
         arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
 
+        #Next scene to load
+        next_level = None
+
         # Create the manager
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -147,14 +150,6 @@ class GameScreen(arcade.View):
             current_plat[0] = lever_platform(current_plat[0], current_plat[1],
                                                 current_plat[2], current_plat[3], current_plat[4], self.moving_vel)
 
-        """self.player_on_lever, self.move_plat_1_up, self.move_plat_1_down = \
-            levers_check_col(self.scene, "Lever 1", self.wizard, self.familiar,
-                             self.move_plat_1_up, self.move_plat_1_down, self.player_on_lever)
-        # move platforms accordingly
-        self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
-                                                self.move_plat_1_down, 380, 250, self.moving_vel)"""
-
-
         # See if player has collided w anything from the Don't Touch layer
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]):
             self.wizard.position = (SPAWN_X, SPAWN_Y)
@@ -165,8 +160,7 @@ class GameScreen(arcade.View):
         # for now it just goes to quit screen since there is no level 2 yet
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Door"]) and \
                 arcade.check_for_collision_with_list(self.familiar, self.scene["Door"]):
-            end_screen = QuitScreen()
-            self.window.show_view(end_screen)
+            self.window.show_view(self.next_level)
 
     # region helpers
 
@@ -185,6 +179,8 @@ class GameScreen(arcade.View):
 class LevelZero(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
+        self.next_level = LevelOne()
+
         # name of map to load
         map_name = "Assets\\Maps\\Level_0_map.json"
         layer_options = {
@@ -280,7 +276,7 @@ class LevelOne(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         # name of map to load
-        map_name = "Assets\\Maps\\Level_0_map.json"
+        map_name = "Assets\\Maps\\Level_1_map.json"
         layer_options = {
             "Platforms": {
                 "use_spatial_hash": True,
@@ -291,7 +287,25 @@ class LevelOne(GameScreen):
             "Lever 1": {
                 "use_spatial_hash": True,
             },
+            "Lever 2": {
+                "use_spatial_hash": True,
+            },
             "Button 1": {
+                "use_spatial_hash": True,
+            },
+            "Button 2": {
+                "use_spatial_hash": True,
+            },
+            "Button 3": {
+                "use_spatial_hash": True,
+            },
+            "Button 4": {
+                "use_spatial_hash": True,
+            },
+            "Button 5": {
+                "use_spatial_hash": True,
+            },
+            "Button 6": {
                 "use_spatial_hash": True,
             },
             "Door": {
@@ -301,6 +315,51 @@ class LevelOne(GameScreen):
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        #Add in moving platforms
+        #Lever platforms here
+
+        #Button platforms here
+
+        # Player Sprite Setup
+        self.scene.add_sprite_list("Interacts")
+        self.scene.add_sprite_list("Wiz")
+        self.scene.add_sprite_list("Cat")
+        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
+
+        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        self.wizard.position = (SPAWN_X, SPAWN_Y)
+        self.scene.add_sprite("Wiz", self.wizard)
+
+        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.scene.add_sprite("Cat", self.familiar)
+
+        # Adding interactable objects
+        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", 0.15)
+        self.interact_box.center_x = 400
+        self.interact_box.center_y = 595
+        self.scene.add_sprite("Interacts", self.interact_box)
+
+        # Load textures for when targeting is occurring
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
+            self.target_anim.append(texture)
+        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
+        self.target_anim_sprite.alpha = 0
+        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+
+        # Input Handler
+        self.ih = InputHandler(self.wizard, self.familiar, self)
+
+        # Physics Engines
+        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""
