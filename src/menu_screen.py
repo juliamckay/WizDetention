@@ -1,6 +1,6 @@
 import arcade
 import arcade.gui
-from src.game import GameScreen
+from src.game import LevelZero
 from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
@@ -57,7 +57,7 @@ class MenuScreen(arcade.View):
         )
 
     def on_click_start(self, event):
-        game_screen = GameScreen()
+        game_screen = LevelZero()
         self.window.show_view(game_screen)
 
     def on_click_credits(self, event):

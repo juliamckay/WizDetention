@@ -51,114 +51,14 @@ class GameScreen(arcade.View):
         self.button_count = 0
         self.button_plats = []
         self.lever_plats = []
-
         self.player_on_lever = False
-
-        self.moving_platform_1 = None
         self.moving_vel = 2
-        self.move_plat_1_up = True
-        self.move_plat_1_down = False
-
-        self.moving_platform_2 = None
 
         # Physics Engine
         self.pe1 = None
         self.pe2 = None
         self.pe3 = None
         self.ty = None
-
-    def setup(self):
-        """Set up the game here. Call this function to restart the game."""
-        # name of map to load
-        map_name = "Assets\\Maps\\Level_0_map.json"
-        layer_options = {
-            "Platforms": {
-                "use_spatial_hash": True,
-            },
-            "Dont Touch": {
-                "use_spatial_hash": True,
-            },
-            "Lever 1": {
-                "use_spatial_hash": True,
-            },
-            "Button 1": {
-                "use_spatial_hash": True,
-            },
-            "Door": {
-                "use_spatial_hash": True,
-            },
-        }
-
-        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
-        self.scene = arcade.Scene.from_tilemap(self.tile_map)
-
-        # Adding Moving Platform Sprite
-        self.button_count = 1
-        self.lever_count = 1
-
-        self.moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
-        self.moving_platform_1.center_x = 1175
-        self.moving_platform_1.center_y = 380
-        self.move_plat_1_up = True
-        self.move_plat_1_down = False
-        self.moving_platform_1.change_x = 0
-        self.moving_platform_1.change_y = 0
-        self.lever_plats.append([self.moving_platform_1, True, False, 380, 250])
-        self.scene.add_sprite("Platforms", self.moving_platform_1)
-
-        self.moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
-        self.moving_platform_2.center_x = 600
-        self.moving_platform_2.center_y = 455
-        self.moving_platform_2.change_x = 0
-        self.moving_platform_2.center_y = 0
-        self.button_plats.append([self.moving_platform_2, 555, 455])
-        self.scene.add_sprite("Platforms", self.moving_platform_2)
-
-        # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
-        # self.stop_interact_area.center_x = 570
-        # self.stop_interact_area.center_y = 570
-
-        # self.scene.add_sprite("Interacts", self.stop_interact_area)
-
-        # Player Sprite Setup
-        self.scene.add_sprite_list("Interacts")
-        self.scene.add_sprite_list("Wiz")
-        self.scene.add_sprite_list("Cat")
-        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-
-        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
-        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
-        self.wizard.position = (SPAWN_X, SPAWN_Y)
-        self.scene.add_sprite("Wiz", self.wizard)
-
-        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
-        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
-        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
-        self.scene.add_sprite("Cat", self.familiar)
-
-        # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", 0.15)
-        self.interact_box.center_x = 400
-        self.interact_box.center_y = 595
-        self.scene.add_sprite("Interacts", self.interact_box)
-
-        # Load textures for when targeting is occurring
-        for i in range(4):
-            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
-            self.target_anim.append(texture)
-        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
-        self.target_anim_sprite.alpha = 0
-        self.scene.add_sprite("Targeting", self.target_anim_sprite)
-
-        # Input Handler
-        self.ih = InputHandler(self.wizard, self.familiar, self)
-
-        # Physics Engines
-        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
     def on_show_view(self):
         self.setup()
@@ -282,6 +182,125 @@ class GameScreen(arcade.View):
 
     # endregion
 
+class LevelZero(GameScreen):
+    def setup(self):
+        """Set up the game here. Call this function to restart the game."""
+        # name of map to load
+        map_name = "Assets\\Maps\\Level_0_map.json"
+        layer_options = {
+            "Platforms": {
+                "use_spatial_hash": True,
+            },
+            "Dont Touch": {
+                "use_spatial_hash": True,
+            },
+            "Lever 1": {
+                "use_spatial_hash": True,
+            },
+            "Button 1": {
+                "use_spatial_hash": True,
+            },
+            "Door": {
+                "use_spatial_hash": True,
+            },
+        }
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        # Adding Moving Platform Sprite
+        self.button_count = 1
+        self.lever_count = 1
+
+        self.moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
+        self.moving_platform_1.center_x = 1175
+        self.moving_platform_1.center_y = 380
+        self.move_plat_1_up = True
+        self.move_plat_1_down = False
+        self.moving_platform_1.change_x = 0
+        self.moving_platform_1.change_y = 0
+        self.lever_plats.append([self.moving_platform_1, True, False, 380, 250])
+        self.scene.add_sprite("Platforms", self.moving_platform_1)
+
+        self.moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
+        self.moving_platform_2.center_x = 600
+        self.moving_platform_2.center_y = 455
+        self.moving_platform_2.change_x = 0
+        self.moving_platform_2.center_y = 0
+        self.button_plats.append([self.moving_platform_2, 555, 455])
+        self.scene.add_sprite("Platforms", self.moving_platform_2)
+
+        # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
+        # self.stop_interact_area.center_x = 570
+        # self.stop_interact_area.center_y = 570
+
+        # self.scene.add_sprite("Interacts", self.stop_interact_area)
+
+        # Player Sprite Setup
+        self.scene.add_sprite_list("Interacts")
+        self.scene.add_sprite_list("Wiz")
+        self.scene.add_sprite_list("Cat")
+        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
+
+        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        self.wizard.position = (SPAWN_X, SPAWN_Y)
+        self.scene.add_sprite("Wiz", self.wizard)
+
+        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.scene.add_sprite("Cat", self.familiar)
+
+        # Adding interactable objects
+        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", 0.15)
+        self.interact_box.center_x = 400
+        self.interact_box.center_y = 595
+        self.scene.add_sprite("Interacts", self.interact_box)
+
+        # Load textures for when targeting is occurring
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
+            self.target_anim.append(texture)
+        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
+        self.target_anim_sprite.alpha = 0
+        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+
+        # Input Handler
+        self.ih = InputHandler(self.wizard, self.familiar, self)
+
+        # Physics Engines
+        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
+
+class LevelOne(GameScreen):
+    def setup(self):
+        """Set up the game here. Call this function to restart the game."""
+        # name of map to load
+        map_name = "Assets\\Maps\\Level_0_map.json"
+        layer_options = {
+            "Platforms": {
+                "use_spatial_hash": True,
+            },
+            "Dont Touch": {
+                "use_spatial_hash": True,
+            },
+            "Lever 1": {
+                "use_spatial_hash": True,
+            },
+            "Button 1": {
+                "use_spatial_hash": True,
+            },
+            "Door": {
+                "use_spatial_hash": True,
+            },
+        }
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""
