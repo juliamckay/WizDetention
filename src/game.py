@@ -46,7 +46,12 @@ class GameScreen(arcade.View):
         # self.stop_interact_area = None
         # self.new_box = None
 
-        # Moving Platform Sprites
+        # Moving Platform Info
+        self.lever_count = 0
+        self.button_count = 0
+        self.button_plats = []
+        self.lever_plats = []
+
         self.player_on_lever = False
 
         self.moving_platform_1 = None
@@ -88,6 +93,9 @@ class GameScreen(arcade.View):
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         # Adding Moving Platform Sprite
+        self.button_count = 1
+        self.lever_count = 1
+
         self.moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
         self.moving_platform_1.center_x = 1175
         self.moving_platform_1.center_y = 380
@@ -95,6 +103,7 @@ class GameScreen(arcade.View):
         self.move_plat_1_down = False
         self.moving_platform_1.change_x = 0
         self.moving_platform_1.change_y = 0
+        self.lever_plats.append([self.moving_platform_1, True, False, 380, 250])
         self.scene.add_sprite("Platforms", self.moving_platform_1)
 
         self.moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
@@ -102,6 +111,7 @@ class GameScreen(arcade.View):
         self.moving_platform_2.center_y = 455
         self.moving_platform_2.change_x = 0
         self.moving_platform_2.center_y = 0
+        self.button_plats.append([self.moving_platform_2, 555, 455])
         self.scene.add_sprite("Platforms", self.moving_platform_2)
 
         # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
@@ -216,39 +226,34 @@ class GameScreen(arcade.View):
                     self.target_anim_sprite.alpha = 255
                     break
 
-        # check for collision with interactable objects
-        # interact = arcade.check_for_collision(self.wizard_sprite, self.interact_box)
-        # if interact and not self.in_place:
-        #    self.interacting = True
-
-        # stops object interaction
-        # finish_interact = arcade.check_for_collision(self.interact_box, self.stop_interact_area)
-        # if finish_interact:
-        #    self.interacting = False
-        #    self.in_place = True
-        #    self.new_box = arcade.Sprite("Assets\\Sprites\\blue_square.png", 0.15)
-        #    self.new_box.center_x = self.interact_box.center_x
-        #    self.new_box.center_y = self.interact_box.center_y
-        #    self.scene.add_sprite("Platforms", self.new_box)
-        #    self.interact_box.remove_from_sprite_lists()
-        #    self.stop_interact_area.remove_from_sprite_lists()
-        #    self.ih = InputHandler(self.wizard_sprite, self.familiar_sprite)
-
         # check for collision with buttons
-        self.moving_platform_2 = button_platform(self.scene, self.wizard, self.familiar,
-                                                 "Button 1", self.moving_platform_2,
-                                                 555, 455, self.moving_vel)
+        for i in range(1, self.button_count + 1):
+            current_plat = self.button_plats[i-1]
+            max_y = current_plat[1]
+            min_y = current_plat[2]
+            layer_name = "Button " + str(i)
+            current_plat[0] = button_platform(self.scene, self.wizard, self.familiar,
+                                                 layer_name, current_plat[0],
+                                                 max_y, min_y, self.moving_vel)
 
         # check for collision with levers
-        self.player_on_lever, self.move_plat_1_up, self.move_plat_1_down = \
+        for i in range(1, self.lever_count + 1):
+            current_plat = self.lever_plats[i-1]
+            layer_name = "Lever " + str(i)
+            self.player_on_lever, current_plat[1], current_plat[2] = \
+                levers_check_col(self.scene, layer_name, self.wizard, self.familiar,
+                                 current_plat[1], current_plat[2], self.player_on_lever)
+            #move platform accordingly
+            current_plat[0] = lever_platform(current_plat[0], current_plat[1],
+                                                current_plat[2], current_plat[3], current_plat[4], self.moving_vel)
+
+        """self.player_on_lever, self.move_plat_1_up, self.move_plat_1_down = \
             levers_check_col(self.scene, "Lever 1", self.wizard, self.familiar,
                              self.move_plat_1_up, self.move_plat_1_down, self.player_on_lever)
         # move platforms accordingly
         self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
-                                                self.move_plat_1_down, 380, 250, self.moving_vel)
+                                                self.move_plat_1_down, 380, 250, self.moving_vel)"""
 
-        self.moving_platform_1 = lever_platform(self.moving_platform_1, self.move_plat_1_up,
-                                                self.move_plat_1_down, 380, 250, self.moving_vel)
 
         # See if player has collided w anything from the Don't Touch layer
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]):
