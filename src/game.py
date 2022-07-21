@@ -4,6 +4,7 @@ import arcade.gui
 from src.constants import *
 from src.env_interaction import *
 from src.quit_screen import QuitScreen
+from src.constants import ACID_UPDATES_PER_FRAME
 
 
 class GameScreen(arcade.View):
@@ -49,6 +50,11 @@ class GameScreen(arcade.View):
         # self.stop_interact_area = None
         # self.new_box = None
 
+        # Acid Hazards
+        self.acid_hazard_list = None
+        self.acid_textures = []
+        self.cur_texture = 0
+
         # Moving Platform Info
         self.lever_count = 0
         self.button_count = 0
@@ -89,6 +95,15 @@ class GameScreen(arcade.View):
             command.undo()
 
     def on_update(self, delta_time):
+
+        # Go through acid animation frames
+        self.cur_texture += 1
+        if self.cur_texture > 3 * ACID_UPDATES_PER_FRAME:
+            self.cur_texture = 0
+        frame = self.cur_texture // ACID_UPDATES_PER_FRAME
+        for acid in self.acid_hazard_list:
+            acid.texture = self.acid_textures[frame]
+
         self.pe1.update()
         if self.pe1.can_jump():
             self.wizard.jumping = False
@@ -203,6 +218,12 @@ class LevelZero(GameScreen):
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        # Acid animation setup
+        self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Acid/acid_{i}.png")
+            self.acid_textures.append(texture)
 
         # Adding Moving Platform Sprite
         self.button_count = 1
@@ -350,6 +371,12 @@ class LevelOne(GameScreen):
         self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
         self.target_anim_sprite.alpha = 0
         self.scene.add_sprite("Targeting", self.target_anim_sprite)
+
+        # Acid animation setup
+        self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Acid/acid_{i}.png")
+            self.acid_textures.append(texture)
 
         # Input Handler
         self.ih = InputHandler(self.wizard, self.familiar, self)
