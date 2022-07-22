@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="fixed transition issues due to on_draw">
+    <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="added some button and lever platforms and spell objects to level 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/env_interaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/env_interaction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.tmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/menu_screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/menu_screen.py" afterDir="false" />
     </list>
@@ -299,7 +301,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658458198759</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added some button and lever platforms and spell objects to level 1">
+      <created>1658462415225</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1658462415225</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -345,13 +354,14 @@
     <MESSAGE value="acid is now animated" />
     <MESSAGE value="fixed platforms not resetting properly" />
     <MESSAGE value="fixed transition issues due to on_draw" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed transition issues due to on_draw" />
+    <MESSAGE value="added some button and lever platforms and spell objects to level 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="added some button and lever platforms and spell objects to level 1" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/WizDetention$menu_screen.coverage" NAME="menu_screen Coverage Results" MODIFIED="1656750847103" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/WizDetention$open_window__2_.coverage" NAME="open_window (2) Coverage Results" MODIFIED="1656929232839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/WizardDetention" />
     <SUITE FILE_PATH="coverage/WizDetention$open_window.coverage" NAME="open_window Coverage Results" MODIFIED="1657244389923" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/Wizard-Detention" />
-    <SUITE FILE_PATH="coverage/WizDetention$open_window__1_.coverage" NAME="open_window (1) Coverage Results" MODIFIED="1658462270905" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/WizDetention$open_window__1_.coverage" NAME="open_window (1) Coverage Results" MODIFIED="1658468338922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/WizDetention$menu_screen__1_.coverage" NAME="menu_screen (1) Coverage Results" MODIFIED="1657251106652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/WizDetention$Run.coverage" NAME="Run Coverage Results" MODIFIED="1656759529288" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
