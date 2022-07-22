@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1a04543-97c3-41db-9360-e5690c93288c" name="Changes" comment="acid is now animated">
-      <change afterPath="$PROJECT_DIR$/src/Assets/Sprites/Levers/lever_0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Assets/Sprites/Levers/lever_1.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/env_interaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/env_interaction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.tmx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/Maps/Level_1_map.tmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/game.py" afterDir="false" />
     </list>
     <list id="e1ffef58-d93d-4365-9afd-62b2aa19f5d1" name="TargetSprites" comment="TargetSprites" />
@@ -286,7 +285,6 @@
       <option name="project" value="LOCAL" />
       <updated>1658398944178</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -330,9 +328,6 @@
     <MESSAGE value="adjusted update function to make it adaptable to variable number of lever platforms" />
     <MESSAGE value="extracted setup function from GameScreen class and created LevelZero and LevelOne classes to make loading new levels easier" />
     <MESSAGE value="acid is now animated" />
-    <option name="LAST_COMMIT_MESSAGE" value="acid is now animated" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/WizDetention$menu_screen__1_.coverage" NAME="menu_screen (1) Coverage Results" MODIFIED="1657251106652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/WizDetention$open_window__2_.coverage" NAME="open_window (2) Coverage Results" MODIFIED="1656929232839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/WizardDetention" />
     <SUITE FILE_PATH="coverage/WizDetention$Run.coverage" NAME="Run Coverage Results" MODIFIED="1656759529288" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
