@@ -15,7 +15,7 @@ class GameScreen(arcade.View):
         arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
 
         #Next scene to load
-        next_level = None
+        self.next_level = None
 
         # Create the manager
         self.manager = arcade.gui.UIManager()
@@ -79,15 +79,6 @@ class GameScreen(arcade.View):
     def on_show_view(self):
         self.setup()
         arcade.set_background_color(arcade.color.GRAY)
-
-    def on_draw(self):
-        self.clear()
-        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
-        arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
-        arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.PURPLE, 12, 80)
-        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.PURPLE, 12, 80)
-        self.manager.draw()
-        self.scene.draw()
 
     def on_key_press(self, key, mods):
         """Delegated to the input handler"""
@@ -206,6 +197,8 @@ class LevelZero(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.next_level = LevelOne()
+        self.button_plats.clear()
+        self.lever_plats.clear()
 
         # name of map to load
         map_name = "Assets\\Maps\\Level_0_map.json"
@@ -245,23 +238,21 @@ class LevelZero(GameScreen):
         self.button_count = 1
         self.lever_count = 1
 
-        self.moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
-        self.moving_platform_1.center_x = 1175
-        self.moving_platform_1.center_y = 380
-        self.move_plat_1_up = True
-        self.move_plat_1_down = False
-        self.moving_platform_1.change_x = 0
-        self.moving_platform_1.change_y = 0
-        self.lever_plats.append([self.moving_platform_1, True, False, 380, 250])
-        self.scene.add_sprite("Platforms", self.moving_platform_1)
+        moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
+        moving_platform_1.center_x = 1175
+        moving_platform_1.center_y = 380
+        moving_platform_1.change_x = 0
+        moving_platform_1.change_y = 0
+        self.lever_plats.append([moving_platform_1, True, False, 380, 250])
+        self.scene.add_sprite("Platforms", moving_platform_1)
 
-        self.moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
-        self.moving_platform_2.center_x = 600
-        self.moving_platform_2.center_y = 455
-        self.moving_platform_2.change_x = 0
-        self.moving_platform_2.center_y = 0
-        self.button_plats.append([self.moving_platform_2, 555, 455])
-        self.scene.add_sprite("Platforms", self.moving_platform_2)
+        moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
+        moving_platform_2.center_x = 600
+        moving_platform_2.center_y = 455
+        moving_platform_2.change_x = 0
+        moving_platform_2.center_y = 0
+        self.button_plats.append([moving_platform_2, 555, 455])
+        self.scene.add_sprite("Platforms", moving_platform_2)
 
         # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
         # self.stop_interact_area.center_x = 570
@@ -309,9 +300,20 @@ class LevelZero(GameScreen):
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
+    def on_draw(self):
+        self.clear()
+        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
+        arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
+        arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.PURPLE, 12, 80)
+        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.PURPLE, 12, 80)
+        self.manager.draw()
+        self.scene.draw()
+
 class LevelOne(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
+        self.button_plats.clear()
+        self.lever_plats.clear()
         # name of map to load
         map_name = "Assets\\Maps\\Level_1_map.json"
         layer_options = {
