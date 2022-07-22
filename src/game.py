@@ -80,6 +80,11 @@ class GameScreen(arcade.View):
         self.setup()
         arcade.set_background_color(arcade.color.GRAY)
 
+    def on_draw(self):
+        self.clear()
+        self.manager.draw()
+        self.scene.draw()
+
     def on_key_press(self, key, mods):
         """Delegated to the input handler"""
         command = self.ih.handle_input(key)
@@ -301,7 +306,7 @@ class LevelZero(GameScreen):
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
     def on_draw(self):
-        self.clear()
+        super(LevelZero, self).on_draw()
         arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
         arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
         arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.PURPLE, 12, 80)
