@@ -251,7 +251,7 @@ class LevelZero(GameScreen):
         moving_platform_2.center_y = 455
         moving_platform_2.change_x = 0
         moving_platform_2.center_y = 0
-        self.button_plats.append([moving_platform_2, 555, 455])
+        self.button_plats.append([moving_platform_2, 555, 455])    #[plat, max y, min y]
         self.scene.add_sprite("Platforms", moving_platform_2)
 
         # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
@@ -359,6 +359,13 @@ class LevelOne(GameScreen):
         #Lever platforms here
 
         #Button platforms here
+        button_plat_1 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
+        button_plat_1.center_x = 600
+        button_plat_1.center_y = 255
+        button_plat_1.change_x = 0
+        button_plat_1.center_y = 0
+        self.button_plats.append([button_plat_1, 355, 255])
+        self.scene.add_sprite("Platforms", button_plat_1)
 
         # Player Sprite Setup
         self.scene.add_sprite_list("Interacts")
