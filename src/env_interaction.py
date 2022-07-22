@@ -17,20 +17,34 @@ def levers_check_col(scene, layer, player1, player2, move_up, move_down, on_leve
     return on_lever, move_up, move_down, flip_left, flip_right, lever
 
 
-def lever_platform(platform, move_up, move_down, max_y, min_y, move_vel):
+def lever_platform(platform, move_up, move_down, max, min, move_vel, dir='v'):
     # If lever is pressed, move platform
     if move_down:
-        # Adding moving velocity in moving platform
-        platform.center_y -= move_vel
-        # Stop once you reach bottom
-        if platform.center_y < min_y:
-            platform.center_y = min_y
+        if dir == 'v':
+            # Adding moving velocity in moving platform
+            platform.center_y -= move_vel
+            # Stop once you reach bottom
+            if platform.center_y < min:
+                platform.center_y = min
+        elif dir == 'h':
+            # Adding moving velocity in moving platform
+            platform.center_x -= move_vel
+            # Stop once you reach bottom
+            if platform.center_x < min:
+                platform.center_x = min
     if move_up:
-        # Adding moving velocity in moving platform
-        platform.center_y += move_vel
-        # Stop once you reach top
-        if platform.center_y > max_y:
-            platform.center_y = max_y
+        if dir == 'v':
+            # Adding moving velocity in moving platform
+            platform.center_y += move_vel
+            # Stop once you reach top
+            if platform.center_y > max:
+                platform.center_y = max
+        elif dir == 'h':
+            # Adding moving velocity in moving platform
+            platform.center_x += move_vel
+            # Stop once you reach top
+            if platform.center_x > max:
+                platform.center_x = max
 
     return platform
 
