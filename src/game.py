@@ -15,7 +15,7 @@ class GameScreen(arcade.View):
         arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
 
         #Next scene to load
-        next_level = None
+        self.next_level = None
 
         # Create the manager
         self.manager = arcade.gui.UIManager()
@@ -82,10 +82,6 @@ class GameScreen(arcade.View):
 
     def on_draw(self):
         self.clear()
-        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
-        arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
-        arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.PURPLE, 12, 80)
-        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.PURPLE, 12, 80)
         self.manager.draw()
         self.scene.draw()
 
@@ -178,7 +174,7 @@ class GameScreen(arcade.View):
                 self.current_lever[0].texture = self.flipped_right
             #move platform accordingly
             current_plat[0] = lever_platform(current_plat[0], current_plat[1],
-                                                current_plat[2], current_plat[3], current_plat[4], self.moving_vel)
+                                current_plat[2], current_plat[3], current_plat[4], self.moving_vel, current_plat[5])
 
         # See if player has collided w anything from the Don't Touch layer
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]):
@@ -210,6 +206,8 @@ class LevelZero(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.next_level = LevelOne()
+        self.button_plats.clear()
+        self.lever_plats.clear()
 
         # name of map to load
         map_name = "Assets\\Maps\\Level_0_map.json"
@@ -249,23 +247,21 @@ class LevelZero(GameScreen):
         self.button_count = 1
         self.lever_count = 1
 
-        self.moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
-        self.moving_platform_1.center_x = 1175
-        self.moving_platform_1.center_y = 380
-        self.move_plat_1_up = True
-        self.move_plat_1_down = False
-        self.moving_platform_1.change_x = 0
-        self.moving_platform_1.change_y = 0
-        self.lever_plats.append([self.moving_platform_1, True, False, 380, 250])
-        self.scene.add_sprite("Platforms", self.moving_platform_1)
+        moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
+        moving_platform_1.center_x = 1175
+        moving_platform_1.center_y = 380
+        moving_platform_1.change_x = 0
+        moving_platform_1.change_y = 0
+        self.lever_plats.append([moving_platform_1, True, False, 380, 250, 'v'])    # [plat, move up, move down, max, min, dir]
+        self.scene.add_sprite("Platforms", moving_platform_1)
 
-        self.moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
-        self.moving_platform_2.center_x = 600
-        self.moving_platform_2.center_y = 455
-        self.moving_platform_2.change_x = 0
-        self.moving_platform_2.center_y = 0
-        self.button_plats.append([self.moving_platform_2, 555, 455])
-        self.scene.add_sprite("Platforms", self.moving_platform_2)
+        moving_platform_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", PLATFORM_SCALING_V)
+        moving_platform_2.center_x = 600
+        moving_platform_2.center_y = 455
+        moving_platform_2.change_x = 0
+        moving_platform_2.center_y = 0
+        self.button_plats.append([moving_platform_2, 555, 455])    #[plat, max y, min y]
+        self.scene.add_sprite("Platforms", moving_platform_2)
 
         # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
         # self.stop_interact_area.center_x = 570
@@ -313,9 +309,20 @@ class LevelZero(GameScreen):
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
+    def on_draw(self):
+        super(LevelZero, self).on_draw()
+        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
+        arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
+        arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.PURPLE, 12, 80)
+        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.PURPLE, 12, 80)
+        self.manager.draw()
+        self.scene.draw()
+
 class LevelOne(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
+        self.button_plats.clear()
+        self.lever_plats.clear()
         # name of map to load
         map_name = "Assets\\Maps\\Level_1_map.json"
         layer_options = {
@@ -357,10 +364,40 @@ class LevelOne(GameScreen):
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
+        # Lever animation setup
+        self.levers_list = self.tile_map.sprite_lists.get("Lever 1")
+        self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
+        self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
+
         #Add in moving platforms
+        self.button_count = 2
+        self.lever_count = 1
+
         #Lever platforms here
+        lever_plat_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        lever_plat_1.center_x = 895
+        lever_plat_1.center_y = 190
+        lever_plat_1.change_x = 0
+        lever_plat_1.change_y = 0
+        self.lever_plats.append([lever_plat_1, False, True, 1065, 895, 'h'])  # [plat, move up, move down, max, min, dir]
+        self.scene.add_sprite("Platforms", lever_plat_1)
 
         #Button platforms here
+        button_plat_1 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat_1.center_x = 200
+        button_plat_1.center_y = 90
+        button_plat_1.change_x = 0
+        button_plat_1.center_y = 0
+        self.button_plats.append([button_plat_1, 200, 90])
+        self.scene.add_sprite("Platforms", button_plat_1)
+
+        button_plat_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat_2.center_x = 550
+        button_plat_2.center_y = 90
+        button_plat_2.change_x = 0
+        button_plat_2.center_y = 0
+        self.button_plats.append([button_plat_2, 200, 90])
+        self.scene.add_sprite("Platforms", button_plat_2)
 
         # Player Sprite Setup
         self.scene.add_sprite_list("Interacts")
@@ -379,9 +416,9 @@ class LevelOne(GameScreen):
         self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", 0.15)
-        self.interact_box.center_x = 400
-        self.interact_box.center_y = 595
+        self.interact_box = MagicObject("Assets/Sprites/blue_rect.png", 0.15)
+        self.interact_box.center_x = 430
+        self.interact_box.center_y = 140
         self.scene.add_sprite("Interacts", self.interact_box)
 
         # Load textures for when targeting is occurring
