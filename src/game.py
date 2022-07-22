@@ -4,7 +4,7 @@ import arcade.gui
 from src.constants import *
 from src.env_interaction import *
 from src.quit_screen import QuitScreen
-from src.constants import ACID_UPDATES_PER_FRAME
+from src.constants import ACID_UPDATES_PER_FRAME, PLAYER_UPDATES_PER_FRAME
 
 
 class GameScreen(arcade.View):
@@ -102,6 +102,10 @@ class GameScreen(arcade.View):
             command.undo()
 
     def on_update(self, delta_time):
+
+        # Update the players animation
+        self.wizard.update_animation()
+        self.familiar.update_animation()
 
         # Go through acid animation frames
         self.cur_texture += 1
@@ -437,15 +441,39 @@ class PlayerCharacter(SpecialSprite):
 
         # --- Load the textures ---
 
-        # Load simple texture pairs
+        # Load idle texture
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
-        # self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
-        # self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
+
+        # Load walking textures
+        self.walk_textures = []
+        for i in range(8):
+            texture = load_texture_pair(f"{main_path}_walk_{i}.png")
+            self.walk_textures.append(texture)
 
         # Set current texture and hitbox
         self.texture = self.idle_texture_pair[0]
         self.hit_box = self.texture.hit_box_points
 
+    def update_animation(self, delta_time: float = 1 / 60):
+
+        # Figure out if we need to flip face left or right
+        if self.change_x < 0 and self.character_face_direction == RIGHT_FACE:
+            self.character_face_direction = LEFT_FACE
+        elif self.change_x > 0 and self.character_face_direction == LEFT_FACE:
+            self.character_face_direction = RIGHT_FACE
+
+        # Idle animation
+        if self.change_x == 0 and self.change_y == 0:
+            self.texture = self.idle_texture_pair[self.character_face_direction]
+            return
+
+        # Walking animation
+        self.cur_texture += 1
+        if self.cur_texture > 7 * PLAYER_UPDATES_PER_FRAME:
+            self.cur_texture = 0
+        frame = self.cur_texture // PLAYER_UPDATES_PER_FRAME
+        direction = self.character_face_direction
+        self.texture = self.walk_textures[frame][direction]
 
 class MagicObject(SpecialSprite):
     """Object class for casting spells on an object"""
