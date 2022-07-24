@@ -293,7 +293,7 @@ class LevelZero(GameScreen):
         self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/blue_square.png", 0.15)
+        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
         self.interact_box.center_x = 400
         self.interact_box.center_y = 595
         self.scene.add_sprite("Interacts", self.interact_box)
@@ -465,7 +465,7 @@ class LevelOne(GameScreen):
         self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/blue_rect.png", 0.15)
+        self.interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.15)
         self.interact_box.center_x = 430
         self.interact_box.center_y = 140
         self.scene.add_sprite("Interacts", self.interact_box)
