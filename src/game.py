@@ -59,9 +59,9 @@ class GameScreen(arcade.View):
 
         # Levers
         self.current_lever = None
+        self.current_plat = None
         self.flipped_right = None
         self.flipped_left = None
-        self.lever_right = True
         self.lever_left = False
 
         # Moving Platform Info
@@ -69,7 +69,7 @@ class GameScreen(arcade.View):
         self.button_count = 0
         self.button_plats = []
         self.lever_plats = []
-        self.player_on_lever = False
+        self.player_on_lever = 0
         self.moving_vel = 2
 
         # Physics Engine
@@ -164,19 +164,38 @@ class GameScreen(arcade.View):
                                                  max_y, min_y, self.moving_vel)
 
         # check for collision with levers
-        for i in range(1, self.lever_count + 1):
-            current_plat = self.lever_plats[i-1]
-            layer_name = "Lever " + str(i)
-            self.player_on_lever, current_plat[1], current_plat[2], self.lever_left, self.lever_right, self.current_lever= \
-                levers_check_col(self.scene, layer_name, self.wizard, self.familiar,
-                                 current_plat[1], current_plat[2], self.player_on_lever, self.lever_left, self.lever_right)
-            if self.lever_left and self.player_on_lever:
-                self.current_lever[0].texture = self.flipped_left
-            if self.lever_right and self.player_on_lever:
-                self.current_lever[0].texture = self.flipped_right
-            #move platform accordingly
-            current_plat[0] = lever_platform(current_plat[0], current_plat[1],
-                                current_plat[2], current_plat[3], current_plat[4], self.moving_vel, current_plat[5])
+        if not self.player_on_lever:
+            for i in range(0, self.lever_count):
+                layer_name = f"Lever {i + 1}"
+                self.player_on_lever, self.current_lever = levers_check_col(self.scene, layer_name,
+                                                                            self.wizard, self.familiar)
+
+                if self.player_on_lever:
+                    self.lever_plats[i][1] = not self.lever_plats[i][1]
+                    self.lever_plats[i][2] = not self.lever_plats[i][2]
+                    self.lever_left = not self.lever_left
+
+                    if self.lever_left:
+                        self.current_lever[0].texture = self.flipped_left
+                    else:
+                        self.current_lever[0].texture = self.flipped_right
+                    break
+
+        # This means someone is currently pressing a lever
+        else:
+            if self.player_on_lever == 1:
+                player = self.wizard
+            else:
+                player = self.familiar
+
+            self.player_on_lever = levers_check_remaining_col(self.current_lever[0], player, self.player_on_lever)
+
+        # move all platforms accordingly
+        for i in range(0, self.lever_count):
+            current_plat = self.lever_plats[i]
+            current_plat[0] = lever_platform(current_plat[0], current_plat[1], current_plat[2],
+                                             current_plat[3], current_plat[4], self.moving_vel,
+                                             current_plat[5])
 
         # See if player has collided w anything from the Don't Touch layer
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]) or \
@@ -206,8 +225,8 @@ class GameScreen(arcade.View):
             self.target_anim_sprite.texture = self.target_anim[self.curr_targ_anim_count]
             self.curr_targ_anim_count = (self.curr_targ_anim_count + 1) % 4
             self.cooldown = 0
-
     # endregion
+
 
 class LevelZero(GameScreen):
     def setup(self):
@@ -325,6 +344,7 @@ class LevelZero(GameScreen):
         self.manager.draw()
         self.scene.draw()
 
+
 class LevelOne(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
@@ -378,28 +398,28 @@ class LevelOne(GameScreen):
         self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
         self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
 
-        #Add in moving platforms
+        # Add in moving platforms
         self.button_count = 6
         self.lever_count = 2
 
-        #Lever platforms here
-        lever_plat_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
-        lever_plat_1.center_x = 895
-        lever_plat_1.center_y = 185
-        lever_plat_1.change_x = 0
-        lever_plat_1.change_y = 0
-        self.lever_plats.append([lever_plat_1, False, True, 1065, 895, 'h'])  # [plat, move up, move down, max, min, dir]
-        self.scene.add_sprite("Platforms", lever_plat_1)
+        # Lever platforms here
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        lever_plat.center_x = 895
+        lever_plat.center_y = 185
+        lever_plat.change_x = 0
+        lever_plat.change_y = 0
+        self.lever_plats.append([lever_plat, False, True, 1065, 895, 'h'])  # [plat, move up, move down, max, min, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
 
-        lever_plat_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
-        lever_plat_1.center_x = 1195
-        lever_plat_1.center_y = 405
-        lever_plat_1.change_x = 0
-        lever_plat_1.change_y = 0
-        self.lever_plats.append([lever_plat_1, True, False, 1195, 1095, 'h'])  # [plat, move up, move down, max, min, dir]
-        self.scene.add_sprite("Platforms", lever_plat_1)
+        lever_plat_2 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        lever_plat_2.center_x = 1195
+        lever_plat_2.center_y = 405
+        lever_plat_2.change_x = 0
+        lever_plat_2.change_y = 0
+        self.lever_plats.append([lever_plat_2, True, False, 1195, 1095, 'h'])  # [plat, move up, move down, max, min, dir]
+        self.scene.add_sprite("Platforms", lever_plat_2)
 
-        #Button platforms here
+        # Button platforms here
         button_plat_1 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
         button_plat_1.center_x = 200
         button_plat_1.center_y = 90
@@ -494,6 +514,7 @@ class LevelOne(GameScreen):
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
+
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""
     return [
@@ -560,6 +581,7 @@ class PlayerCharacter(SpecialSprite):
         frame = self.cur_texture // PLAYER_UPDATES_PER_FRAME
         direction = self.character_face_direction
         self.texture = self.walk_textures[frame][direction]
+
 
 class MagicObject(SpecialSprite):
     """Object class for casting spells on an object"""
