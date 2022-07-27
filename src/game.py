@@ -156,12 +156,11 @@ class GameScreen(arcade.View):
         # check for collision with buttons
         for i in range(1, self.button_count + 1):
             current_plat = self.button_plats[i-1]
-            max_y = current_plat[1]
-            min_y = current_plat[2]
+            end = current_plat[1]
+            start = current_plat[2]
             layer_name = "Button " + str(i)
-            current_plat[0] = button_platform(self.scene, self.wizard, self.familiar,
-                                                 layer_name, current_plat[0],
-                                                 max_y, min_y, self.moving_vel)
+            current_plat[0] = button_platform(self.scene, self.wizard, self.familiar, layer_name, current_plat[0],
+                                              end, start, self.moving_vel, current_plat[3])
 
         # check for collision with levers
         if not self.player_on_lever:
@@ -286,7 +285,7 @@ class LevelZero(GameScreen):
         moving_platform_2.center_y = 455
         moving_platform_2.change_x = 0
         moving_platform_2.center_y = 0
-        self.button_plats.append([moving_platform_2, 555, 455])    #[plat, max y, min y]
+        self.button_plats.append([moving_platform_2, 555, 455])    #[plat, max, min]
         self.scene.add_sprite("Platforms", moving_platform_2)
 
         # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
@@ -514,6 +513,164 @@ class LevelOne(GameScreen):
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
+class LevelTwo(GameScreen):
+    def setup(self):
+        """Set up the game here. Call this function to restart the game."""
+        self.next_level = QuitScreen()
+        self.button_plats.clear()
+        self.lever_plats.clear()
+        self.player_on_lever = False
+
+        # name of map to load
+        map_name = "Assets\\Maps\\Level_2_map.json"
+        layer_options = {
+            "Platforms": {
+                "use_spatial_hash": True,
+            },
+            "Dont Touch": {
+                "use_spatial_hash": True,
+            },
+            "Lever 1": {
+                "use_spatial_hash": True,
+            },
+            "Button 1": {
+                "use_spatial_hash": True,
+            },
+            "Door": {
+                "use_spatial_hash": True,
+            },
+        }
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        # Lever animation setup
+        self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
+        self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
+
+        # Acid animation setup
+        self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Acid/acid_{i}.png")
+            self.acid_textures.append(texture)
+
+        # Adding Moving Platform Sprite
+        self.button_count = 8
+        self.lever_count = 1
+
+        # Button platforms here
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        button_plat.center_x = 80
+        button_plat.center_y = 250
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 200, 80, 'h'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        button_plat.center_x = 80
+        button_plat.center_y = 470
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 200, 80, 'h'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat.center_x = 760
+        button_plat.center_y = 385
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 470, 385, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat.center_x = 565
+        button_plat.center_y = 385
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 470, 385, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat.center_x = 950
+        button_plat.center_y = 385
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 470, 385, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat.center_x = 660
+        button_plat.center_y = 385
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 470, 385, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat.center_x = 1050
+        button_plat.center_y = 385
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 470, 385, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
+        button_plat.center_x = 855
+        button_plat.center_y = 385
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 470, 385, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        # Lever platforms here
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        lever_plat.center_x = 80
+        lever_plat.center_y = 350
+        lever_plat.change_x = 0
+        lever_plat.change_y = 0
+        self.lever_plats.append([lever_plat, False, True, 200, 80, 'h'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
+
+        # Player Sprite Setup
+        self.scene.add_sprite_list("Interacts")
+        self.scene.add_sprite_list("Wiz")
+        self.scene.add_sprite_list("Cat")
+        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
+
+        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        self.wizard.position = (SPAWN_X + 150, SPAWN_Y)
+        self.scene.add_sprite("Wiz", self.wizard)
+
+        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.scene.add_sprite("Cat", self.familiar)
+
+        # Adding interactable objects
+        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
+        self.interact_box.center_x = 455
+        self.interact_box.center_y = 275
+        self.scene.add_sprite("Interacts", self.interact_box)
+
+        # Load textures for when targeting is occurring
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
+            self.target_anim.append(texture)
+        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
+        self.target_anim_sprite.alpha = 0
+        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+
+        # Input Handler
+        self.ih = InputHandler(self.wizard, self.familiar, self)
+
+        # Physics Engines
+        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""

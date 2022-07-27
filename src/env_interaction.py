@@ -53,18 +53,48 @@ def lever_platform(platform, move_up, move_down, max, min, move_vel, dir='v'):
     return platform
 
 
-def button_platform(scene, player1, player2, layer, platform, max_y, min_y, move_vel):
-    if arcade.check_for_collision_with_list(player1, scene[layer]) or \
-            arcade.check_for_collision_with_list(player2, scene[layer]):
-        # Adding moving velocity in moving platform
-        platform.center_y += move_vel
-        # Stop once you reach top
-        if platform.center_y > max_y:
-            platform.center_y = max_y
-    else:
-        # Adding moving velocity in moving platform
-        platform.center_y -= move_vel
-        # Stop once you reach top
-        if platform.center_y < min_y:
-            platform.center_y = min_y
+def button_platform(scene, player1, player2, layer, platform, end, start, move_vel, dir):
+    player_coll = arcade.check_for_collision_with_list(player1, scene[layer]) or \
+                    arcade.check_for_collision_with_list(player2, scene[layer])
+    if dir == 'v':
+        if player_coll:
+            # Adding moving velocity in moving platform
+            platform.center_y += move_vel
+            # Stop once you reach top
+            if platform.center_y > end:
+                platform.center_y = end
+        else:
+            # Adding moving velocity in moving platform
+            platform.center_y -= move_vel
+            # Stop once you reach top
+            if platform.center_y < start:
+                platform.center_y = start
+    elif dir == 'h':
+        if end > start:
+            if player_coll:
+                # Adding moving velocity in moving platform
+                platform.center_x += move_vel
+                # Stop once you reach top
+                if platform.center_x > end:
+                    platform.center_x = end
+            else:
+                # Adding moving velocity in moving platform
+                platform.center_x -= move_vel
+                # Stop once you reach top
+                if platform.center_x < start:
+                    platform.center_x = start
+        else:
+            if player_coll:
+                # Adding moving velocity in moving platform
+                platform.center_x -= move_vel
+                # Stop once you reach top
+                if platform.center_x < end:
+                    platform.center_x = end
+            else:
+                # Adding moving velocity in moving platform
+                platform.center_x += move_vel
+                # Stop once you reach top
+                if platform.center_x > start:
+                    platform.center_x = start
+
     return platform
