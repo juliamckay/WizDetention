@@ -700,6 +700,7 @@ class SpellCommand(Command):
         super().__init__(sprite)
         self.ih = ih
         self.view = view
+        self.target = None
 
     def __call__(self):
         """Locks wizard movement and Calls a function back in game.py that returns the target sprite to move instead"""
@@ -709,19 +710,43 @@ class SpellCommand(Command):
         self.sprite.can_move = False
 
         # Find Target
-        target = self.view.get_target_sprite()
-        if not target:
+        self.target = self.view.get_target_sprite()
+        if not self.target:
             return
 
         # Adjust Movement Commands when target exists
-        self.ih.bind(arcade.key.A, MoveLeftCommand(target))
-        self.ih.bind(arcade.key.D, MoveRightCommand(target))
+        self.ih.bind(arcade.key.A, MoveBoxLeftCommand(self.target))
+        self.ih.bind(arcade.key.D, MoveBoxRightCommand(self.target))
 
     def undo(self):
         self.ih.bind(arcade.key.W, JumpCommand(self.sprite))
         self.ih.bind(arcade.key.A, MoveLeftCommand(self.sprite))
         self.ih.bind(arcade.key.D, MoveRightCommand(self.sprite))
         self.sprite.can_move = True
+
+
+class MoveBoxRightCommand(MoveRightCommand):
+    def __init__(self, sprite: SpecialSprite):
+        super().__init__(sprite)
+
+    def __call__(self):
+        super().__call__()
+
+    def undo(self):
+        if self.called and self.sprite.can_move:
+            self.sprite.change_x = 0
+
+
+class MoveBoxLeftCommand(MoveLeftCommand):
+    def __init__(self, sprite: SpecialSprite):
+        super().__init__(sprite)
+
+    def __call__(self):
+        super().__call__()
+
+    def undo(self):
+        if self.called and self.sprite.can_move:
+            self.sprite.change_x = 0
 
 
 class Reset(Command):
