@@ -708,11 +708,14 @@ class PlayerCharacter(SpecialSprite):
         # Load idle texture
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
 
-        # Load walking textures
+        # Load walking and death animation textures
         self.walk_textures = []
+        self.death_textures = []
         for i in range(8):
             texture = load_texture_pair(f"{main_path}_walk_{i}.png")
             self.walk_textures.append(texture)
+            texture = load_texture_pair(f"{main_path}_death_{i}.png")
+            self.death_textures.append(texture)
 
         # Set current texture and hitbox
         self.texture = self.idle_texture_pair[0]
