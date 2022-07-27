@@ -285,7 +285,7 @@ class LevelZero(GameScreen):
         moving_platform_2.center_y = 455
         moving_platform_2.change_x = 0
         moving_platform_2.center_y = 0
-        self.button_plats.append([moving_platform_2, 555, 455])    #[plat, max, min]
+        self.button_plats.append([moving_platform_2, 555, 455, 'v'])    #[plat, max, min]
         self.scene.add_sprite("Platforms", moving_platform_2)
 
         # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
@@ -350,7 +350,7 @@ class LevelOne(GameScreen):
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
-        self.next_level = QuitScreen()
+        self.next_level = LevelTwo()
 
         # name of map to load
         map_name = "Assets\\Maps\\Level_1_map.json"
@@ -424,7 +424,7 @@ class LevelOne(GameScreen):
         button_plat_1.center_y = 90
         button_plat_1.change_x = 0
         button_plat_1.center_y = 0
-        self.button_plats.append([button_plat_1, 200, 90])
+        self.button_plats.append([button_plat_1, 200, 90, 'v'])
         self.scene.add_sprite("Platforms", button_plat_1)
 
         button_plat_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 2)
@@ -432,7 +432,7 @@ class LevelOne(GameScreen):
         button_plat_2.center_y = 90
         button_plat_2.change_x = 0
         button_plat_2.center_y = 0
-        self.button_plats.append([button_plat_2, 200, 90])
+        self.button_plats.append([button_plat_2, 200, 90, 'v'])
         self.scene.add_sprite("Platforms", button_plat_2)
 
         button_plat_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.8)
@@ -440,7 +440,7 @@ class LevelOne(GameScreen):
         button_plat_2.center_y = 535
         button_plat_2.change_x = 0
         button_plat_2.center_y = 0
-        self.button_plats.append([button_plat_2, 590, 535])
+        self.button_plats.append([button_plat_2, 590, 535, 'v'])
         self.scene.add_sprite("Platforms", button_plat_2)
 
         button_plat_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.8)
@@ -448,7 +448,7 @@ class LevelOne(GameScreen):
         button_plat_2.center_y = 635
         button_plat_2.change_x = 0
         button_plat_2.center_y = 0
-        self.button_plats.append([button_plat_2, 735, 635])
+        self.button_plats.append([button_plat_2, 735, 635, 'v'])
         self.scene.add_sprite("Platforms", button_plat_2)
 
         button_plat_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.8)
@@ -456,7 +456,7 @@ class LevelOne(GameScreen):
         button_plat_2.center_y = 635
         button_plat_2.change_x = 0
         button_plat_2.center_y = 0
-        self.button_plats.append([button_plat_2, 735, 635])
+        self.button_plats.append([button_plat_2, 735, 635, 'v'])
         self.scene.add_sprite("Platforms", button_plat_2)
 
         button_plat_2 = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.8)
@@ -464,7 +464,7 @@ class LevelOne(GameScreen):
         button_plat_2.center_y = 635
         button_plat_2.change_x = 0
         button_plat_2.center_y = 0
-        self.button_plats.append([button_plat_2, 735, 635])
+        self.button_plats.append([button_plat_2, 735, 635, 'v'])
         self.scene.add_sprite("Platforms", button_plat_2)
 
         # Player Sprite Setup
