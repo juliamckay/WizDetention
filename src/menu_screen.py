@@ -25,13 +25,15 @@ class MenuScreen(arcade.View):
         self.button_texture = arcade.load_texture("Assets/UI/button_0.png")
         self.pressed_button_texture = arcade.load_texture("Assets/UI/button_1.png")
 
+        # Load title texture
+        self.title_texture = arcade.load_texture("Assets/UI/title.png")
+
+        # Load background texture
+        self.background = arcade.load_texture("Assets/UI/wiz_det_start_screen.png")
+
     def on_show_view(self):
         # Title
-        game_title = arcade.gui.UITextArea(text="Wizard Detention",
-                                           width=500,
-                                           height=50,
-                                           font_size=30,
-                                           font_name="Kenney Pixel Square")
+        game_title = arcade.gui.UITextureButton(texture=self.title_texture, scale=0.3)
         self.v_box.add(game_title.with_space_around(bottom=50))
 
         # Start button
@@ -55,18 +57,21 @@ class MenuScreen(arcade.View):
         self.v_box.add(credits_button.with_space_around(bottom=20))
 
         self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                anchor_x="center_x",
-                anchor_y="center_y",
-                child=self.v_box),
+            arcade.gui.UITexturePane(
+                child=arcade.gui.UIAnchorWidget(
+                    anchor_x="center_x",
+                    anchor_y="center_y",
+                    child=self.v_box),
+                tex=self.background,
+                padding=(220, 220, 220, 220)
+            ),
         )
 
     def on_click_quit(self, event):
         arcade.exit()
 
     def on_click_start(self, event):
-        #game_screen = LevelZero()
-        game_screen = QuitScreen()
+        game_screen = LevelZero()
         self.window.show_view(game_screen)
 
     def on_click_credits(self, event):
@@ -88,7 +93,7 @@ class MenuScreen(arcade.View):
         # Start Button Text
         arcade.draw_text("Start",
                          -150,
-                         (SCREEN_HEIGHT // 2) - 5,
+                         (SCREEN_HEIGHT // 2) - 10,
                          arcade.color.WHITE_SMOKE,
                          25,
                          width=SCREEN_WIDTH,
@@ -98,7 +103,7 @@ class MenuScreen(arcade.View):
         # Quit Button Text
         arcade.draw_text("Quit",
                          150,
-                         (SCREEN_HEIGHT // 2) - 5,
+                         (SCREEN_HEIGHT // 2) - 10,
                          arcade.color.WHITE_SMOKE,
                          25,
                          width=SCREEN_WIDTH,
@@ -108,7 +113,7 @@ class MenuScreen(arcade.View):
         # Credits Button Text
         arcade.draw_text("Credits",
                          0,
-                         (SCREEN_HEIGHT // 2) - 100,
+                         (SCREEN_HEIGHT // 2) - 105,
                          arcade.color.WHITE_SMOKE,
                          15,
                          width=SCREEN_WIDTH,
