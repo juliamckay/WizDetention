@@ -1,10 +1,7 @@
 import arcade
 import arcade.gui
-from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FAMILIAR_SCALING, WIZARD_SCALING
 
-class QuitButton(arcade.gui.UIFlatButton):
-    def on_click(self, event: arcade.gui.UIOnClickEvent):
-        arcade.exit()
 
 class QuitScreen(arcade.View):
     def __init__(self):
@@ -21,42 +18,76 @@ class QuitScreen(arcade.View):
         self.v_box = arcade.gui.UIBoxLayout()
         self.h_box = arcade.gui.UIBoxLayout(vertical=False)
 
+        # Load button textures
+        self.button_texture = arcade.load_texture("Assets/UI/button_0.png")
+        self.pressed_button_texture = arcade.load_texture("Assets/UI/button_1.png")
+
+        # Load background texture
+        self.background = arcade.load_texture("Assets/UI/wiz_det_end_screen.png")
+
+        self.player_list = arcade.SpriteList()
+
+        # Set up familiar sprite
+        self.familiar = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.familiar.center_x = (SCREEN_WIDTH // 2) + 200
+        self.familiar.center_y = (SCREEN_HEIGHT // 2) - 295
+        self.player_list.append(self.familiar)
+
+        # Set up familiar sprite
+        self.wizard = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wizard.center_x = (SCREEN_WIDTH // 2) + 150
+        self.wizard.center_y = (SCREEN_HEIGHT // 2) - 295
+        self.player_list.append(self.wizard)
+
     def on_show_view(self):
         # Title
-        game_title = arcade.gui.UITextArea(text="Thanks for playing!",
+        game_title = arcade.gui.UITextArea(text="You escaped the Detention\n"
+                                                "                    Dimension!\n"
+                                                "        Thanks for playing!",
                                            width=800,
-                                           height=40,
+                                           height=200,
                                            font_size=30,
-                                           font_name="Kenney Future")
-        self.v_box.add(game_title.with_space_around(bottom=50))
+                                           text_color=arcade.color.DARK_BLUE_GRAY,
+                                           font_name="Kenney Pixel Square")
+        self.v_box.add(game_title.with_space_around(bottom=50, left=150))
 
         # Quit button
-        quit_button = QuitButton(text="Quit", width=200)
-        self.h_box.add(quit_button.with_space_around(left=20))
+        quit_button = arcade.gui.UITextureButton(texture=self.button_texture,
+                                                 texture_pressed=self.pressed_button_texture)
+        quit_button.on_click = self.on_click_quit
+        self.h_box.add(quit_button.with_space_around(bottom=20))
 
         self.v_box.add(self.h_box.with_space_around(bottom=20))
 
         # Credits button
-        credits_button = arcade.gui.UIFlatButton(text="Credits", width=100)
-        self.v_box.add(credits_button.with_space_around(bottom=20))
+        credits_button = arcade.gui.UITextureButton(texture=self.button_texture,
+                                                    texture_pressed=self.pressed_button_texture,
+                                                    scale=0.7)
         credits_button.on_click = self.on_click_credits
+        self.v_box.add(credits_button.with_space_around(bottom=20))
 
         self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                anchor_x="center_x",
-                anchor_y="center_y",
-                child=self.v_box)
+            arcade.gui.UITexturePane(
+                child=arcade.gui.UIAnchorWidget(
+                    anchor_x="center_x",
+                    anchor_y="center_y",
+                    child=self.v_box),
+                tex=self.background,
+                padding=(165, 165, 165, 165)
+            ),
         )
+
+    def on_click_quit(self, event):
+        arcade.exit()
 
     def on_click_credits(self, event):
         message_box = arcade.gui.UIMessageBox(
             width=SCREEN_WIDTH / 2,
             height=SCREEN_HEIGHT / 2,
             message_text=(
-                "Credits Screen\n"
-                "Game made by Julia McKay, Chandler Fox, and Audrey DeHoog"
+                "\n     Credits Screen\n"
+                "       Game made by Julia McKay, Chandler Fox, and Audrey DeHoog"
             ),
-            callback=self.on_message_box_close,
             buttons=["Back"]
         )
         self.manager.add(message_box)
@@ -68,3 +99,24 @@ class QuitScreen(arcade.View):
     def on_draw(self):
         self.clear()
         self.manager.draw()
+        self.player_list.draw()
+
+        # Quit Button Text
+        arcade.draw_text("Quit",
+                         0,
+                         (SCREEN_HEIGHT // 2) - 70,
+                         arcade.color.WHITE_SMOKE,
+                         25,
+                         width=SCREEN_WIDTH,
+                         align="center",
+                         font_name="Kenney Mini Square")
+
+        # Credits Button Text
+        arcade.draw_text("Credits",
+                         0,
+                         (SCREEN_HEIGHT // 2) - 185,
+                         arcade.color.WHITE_SMOKE,
+                         15,
+                         width=SCREEN_WIDTH,
+                         align="center",
+                         font_name="Kenney Mini Square")
