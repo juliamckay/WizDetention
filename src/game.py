@@ -346,13 +346,20 @@ class LevelZero(GameScreen):
 
     def on_draw(self):
         super(LevelZero, self).on_draw()
+        reset_instr = arcade.Text(
+            "Press R to reset the level",
+            300,
+            200,
+            arcade.color.WHITE,
+            12
+        )
+        reset_instr.draw()
         arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
         arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
-        arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.PURPLE, 12, 80)
-        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.PURPLE, 12, 80)
+        #arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.WHITE, 12, 80)
+        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.WHITE, 12, 80)
         self.manager.draw()
         self.scene.draw()
-
 
 class LevelOne(GameScreen):
     def setup(self):
@@ -482,6 +489,7 @@ class LevelOne(GameScreen):
         self.scene.add_sprite_list("Wiz")
         self.scene.add_sprite_list("Cat")
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
+        #self.scene.add_sprite_list_after("Wiz", "Foreground")
 
         # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
         self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
