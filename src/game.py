@@ -78,6 +78,11 @@ class GameScreen(arcade.View):
         self.pe3 = None
         self.ty = None
 
+        # Game Audio
+        self.main_theme = arcade.load_sound("Assets/Audio/8bit-harmony.wav", False)
+        self.main_player = None
+        self.death_noise = arcade.load_sound("Assets/Audio/noise-hit-1.mp3", False)
+
     def on_show_view(self):
         self.setup()
         arcade.set_background_color(arcade.color.GRAY)
@@ -211,6 +216,8 @@ class GameScreen(arcade.View):
         # for now it just goes to quit screen since there is no level 2 yet
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Door"]) and \
                 arcade.check_for_collision_with_list(self.familiar, self.scene["Door"]):
+            if isinstance(self.next_level, QuitScreen):
+                self.main_theme.stop(self.main_player)
             self.window.show_view(self.next_level)
 
     # region helpers
@@ -234,6 +241,9 @@ class LevelZero(GameScreen):
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
+
+        # play background music
+        self.main_player = arcade.play_sound(self.main_theme, 1.0, 0.0, True, 1.0)
 
         # name of map to load
         map_name = "Assets\\Maps\\Level_0_map.json"

@@ -39,7 +39,12 @@ class QuitScreen(arcade.View):
         self.wizard.center_y = (SCREEN_HEIGHT // 2) - 295
         self.player_list.append(self.wizard)
 
+        # Game Audio
+        self.victory_music = arcade.load_sound("Assets/Audio/very-lush-and-swag.mp3", False)
+
     def on_show_view(self):
+        arcade.play_sound(self.victory_music, 1.0, 0.0, True, 1.0)
+
         # Title
         game_title = arcade.gui.UITextArea(text="You escaped the Detention\n"
                                                 "                    Dimension!\n"
