@@ -26,15 +26,20 @@ class QuitScreen(arcade.View):
         self.background = arcade.load_texture("Assets/UI/wiz_det_end_screen.png")
 
         self.player_list = arcade.SpriteList()
+        self.cur_texture = 0
 
         # Set up familiar sprite
         self.familiar = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.cat_bounce0 = arcade.load_texture("Assets/Sprites/Familiar/familiar_bounce_0.png")
+        self.cat_bounce1 = arcade.load_texture("Assets/Sprites/Familiar/familiar_bounce_1.png")
         self.familiar.center_x = (SCREEN_WIDTH // 2) + 200
         self.familiar.center_y = (SCREEN_HEIGHT // 2) - 295
         self.player_list.append(self.familiar)
 
         # Set up familiar sprite
         self.wizard = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wiz_bounce0 = arcade.load_texture("Assets/Sprites/Wizard/wizard_bounce_0.png")
+        self.wiz_bounce1 = arcade.load_texture("Assets/Sprites/Wizard/wizard_bounce_1.png")
         self.wizard.center_x = (SCREEN_WIDTH // 2) + 150
         self.wizard.center_y = (SCREEN_HEIGHT // 2) - 295
         self.player_list.append(self.wizard)
@@ -120,3 +125,15 @@ class QuitScreen(arcade.View):
                          width=SCREEN_WIDTH,
                          align="center",
                          font_name="Kenney Mini Square")
+
+    def on_update(self, delta_time):
+        self.cur_texture += 1
+        if self.cur_texture > 20:
+            self.cur_texture = 1
+
+        if self.cur_texture % 20 == 0:
+            self.wizard.texture = self.wiz_bounce0
+            self.familiar.texture = self.cat_bounce0
+        if self.cur_texture % 12 == 0:
+            self.wizard.texture = self.wiz_bounce1
+            self.familiar.texture = self.cat_bounce1
