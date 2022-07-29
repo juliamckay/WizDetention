@@ -237,12 +237,19 @@ class GameScreen(arcade.View):
 
 
 class LevelZero(GameScreen):
+    def __init__(self):
+        super().__init__()
+        self.text_camera = None
+
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.next_level = LevelOne()
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
+
+        #text overlay setup
+        self.text_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         # play background music
         self.main_player = arcade.play_sound(self.main_theme, 1.0, 0.0, True, 1.0)
@@ -348,20 +355,14 @@ class LevelZero(GameScreen):
 
     def on_draw(self):
         super(LevelZero, self).on_draw()
-        reset_instr = arcade.Text(
-            "Press R to reset the level",
-            300,
-            200,
-            arcade.color.WHITE,
-            12
-        )
-        reset_instr.draw()
-        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
-        arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
-        #arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.WHITE, 12, 80)
-        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.WHITE, 12, 80)
-        self.manager.draw()
-        self.scene.draw()
+
+        self.text_camera.use()
+        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 700, arcade.color.AFRICAN_VIOLET, 12, 80)
+        arcade.draw_text("Only the cat can fit through that...", 800, 150, arcade.color.AMBER, 12, 80)
+        arcade.draw_text("Press R to reset the level", 40, 270, arcade.color.WHITE, 12, 80)
+        arcade.draw_text("Press Esc to quit the game", 40, 250, arcade.color.WHITE, 12, 80)
+        #self.manager.draw()
+        #self.scene.draw()
 
 class LevelOne(GameScreen):
     def setup(self):
