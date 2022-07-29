@@ -218,6 +218,8 @@ class GameScreen(arcade.View):
                 arcade.check_for_collision_with_list(self.familiar, self.scene["Door"]):
             if isinstance(self.next_level, QuitScreen):
                 self.main_theme.stop(self.main_player)
+            else:
+                self.next_level.main_player = self.main_player
             self.window.show_view(self.next_level)
 
     # region helpers
@@ -235,12 +237,19 @@ class GameScreen(arcade.View):
 
 
 class LevelZero(GameScreen):
+    def __init__(self):
+        super().__init__()
+        self.text_camera = None
+
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.next_level = LevelOne()
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
+
+        #text overlay setup
+        self.text_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         # play background music
         self.main_player = arcade.play_sound(self.main_theme, 1.0, 0.0, True, 1.0)
@@ -346,20 +355,14 @@ class LevelZero(GameScreen):
 
     def on_draw(self):
         super(LevelZero, self).on_draw()
-        reset_instr = arcade.Text(
-            "Press R to reset the level",
-            300,
-            200,
-            arcade.color.WHITE,
-            12
-        )
-        reset_instr.draw()
-        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 650, arcade.color.PURPLE, 12, 80)
-        arcade.draw_text("Only the cat can fit through that...", 800, 100, arcade.color.ANDROID_GREEN, 12, 80)
-        #arcade.draw_text("Press R to reset the level", 100, 200, arcade.color.WHITE, 12, 80)
-        arcade.draw_text("Press Esc to quit the game", 100, 180, arcade.color.WHITE, 12, 80)
-        self.manager.draw()
-        self.scene.draw()
+
+        self.text_camera.use()
+        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 700, arcade.color.AFRICAN_VIOLET, 12, 80)
+        arcade.draw_text("Only the cat can fit through that...", 800, 150, arcade.color.AMBER, 12, 80)
+        arcade.draw_text("Press R to reset the level", 40, 270, arcade.color.WHITE, 12, 80)
+        arcade.draw_text("Press Esc to quit the game", 40, 250, arcade.color.WHITE, 12, 80)
+        #self.manager.draw()
+        #self.scene.draw()
 
 class LevelOne(GameScreen):
     def setup(self):
@@ -503,7 +506,7 @@ class LevelOne(GameScreen):
 
         # Adding interactable objects
         self.interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.15)
-        self.interact_box.center_x = 430
+        self.interact_box.center_x = 480
         self.interact_box.center_y = 140
         self.scene.add_sprite("Interacts", self.interact_box)
 
@@ -658,12 +661,12 @@ class LevelTwo(GameScreen):
 
         # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
         self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
-        self.wizard.position = (SPAWN_X + 150, SPAWN_Y)
+        self.wizard.position = (SPAWN_X + 130, SPAWN_Y - 40)
         self.scene.add_sprite("Wiz", self.wizard)
 
         # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
         self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
-        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.familiar.position = (SPAWN_X + 110, SPAWN_Y - 50)
         self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
