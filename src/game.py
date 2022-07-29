@@ -218,6 +218,8 @@ class GameScreen(arcade.View):
                 arcade.check_for_collision_with_list(self.familiar, self.scene["Door"]):
             if isinstance(self.next_level, QuitScreen):
                 self.main_theme.stop(self.main_player)
+            else:
+                self.next_level.main_player = self.main_player
             self.window.show_view(self.next_level)
 
     # region helpers
@@ -503,7 +505,7 @@ class LevelOne(GameScreen):
 
         # Adding interactable objects
         self.interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.15)
-        self.interact_box.center_x = 430
+        self.interact_box.center_x = 480
         self.interact_box.center_y = 140
         self.scene.add_sprite("Interacts", self.interact_box)
 
