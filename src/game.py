@@ -1,5 +1,3 @@
-import time
-
 import arcade
 from abc import abstractmethod
 import arcade.gui
@@ -30,6 +28,7 @@ class GameScreen(arcade.View):
 
         # Game screen
         self.tile_map = None
+        self.layer_options = None
         self.scene = None
 
         # Player Sprites
@@ -82,6 +81,48 @@ class GameScreen(arcade.View):
         self.main_theme = arcade.load_sound("Assets/Audio/8bit-harmony.wav", False)
         self.main_player = None
         self.death_noise = arcade.load_sound("Assets/Audio/noise-hit-1.mp3", False)
+
+    def setup_layer_options(self, lever_count=1, button_count=1):
+        self.layer_options = {
+            "Platforms": {
+                "use_spatial_hash": True,
+            },
+            "Dont Touch": {
+                "use_spatial_hash": True,
+            },
+            "Door": {
+                "use_spatial_hash": True,
+            },
+        }
+        for i in range(1, lever_count + 1):
+            self.layer_options[f"Lever {i}"] = {"use_spatial_hash": True, }
+        for i in range(1, button_count + 1):
+            self.layer_options[f"Button {i}"] = {"use_spatial_hash": True, }
+
+    def setup(self):
+        # Make all players alive
+        if self.wizard:
+            self.wizard.alive()
+        if self.familiar:
+            self.familiar.alive()
+
+        # play background music
+        if not self.main_player:
+            self.main_player = arcade.play_sound(self.main_theme, 1.0, 0.0, True, 1.0)
+
+        self.button_plats.clear()
+        self.lever_plats.clear()
+        self.player_on_lever = False
+
+        # Lever animation setup
+        self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
+        self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
+
+        # Acid animation setup
+        self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Acid/acid_{i}.png")
+            self.acid_textures.append(texture)
 
     def on_show_view(self):
         self.setup()
@@ -204,7 +245,11 @@ class GameScreen(arcade.View):
         # See if player has collided w anything from the Don't Touch layer
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]) or \
                 arcade.check_for_collision_with_list(self.familiar, self.scene["Dont Touch"]):
-            time.sleep(0.05)
+            # Death for the players here
+            self.wizard.die()
+            self.familiar.die()
+
+            # Implement a thread here:
             self.setup()
         """
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]):
@@ -220,6 +265,8 @@ class GameScreen(arcade.View):
                 self.main_theme.stop(self.main_player)
             else:
                 self.next_level.main_player = self.main_player
+
+            # Implement a thread here:
             self.window.show_view(self.next_level)
 
     # region helpers
@@ -244,53 +291,24 @@ class LevelZero(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.next_level = LevelOne()
-        self.button_plats.clear()
-        self.lever_plats.clear()
-        self.player_on_lever = False
 
         #text overlay setup
         self.text_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-        # play background music
-        self.main_player = arcade.play_sound(self.main_theme, 1.0, 0.0, True, 1.0)
-
         # name of map to load
         map_name = "Assets\\Maps\\Level_0_map.json"
-        layer_options = {
-            "Platforms": {
-                "use_spatial_hash": True,
-            },
-            "Dont Touch": {
-                "use_spatial_hash": True,
-            },
-            "Lever 1": {
-                "use_spatial_hash": True,
-            },
-            "Button 1": {
-                "use_spatial_hash": True,
-            },
-            "Door": {
-                "use_spatial_hash": True,
-            },
-        }
 
-        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
-        self.scene = arcade.Scene.from_tilemap(self.tile_map)
-
-        # Lever animation setup
-        self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
-        self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
-
-        # Acid animation setup
-        self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
-        for i in range(4):
-            texture = arcade.load_texture(f"Assets/Sprites/Acid/acid_{i}.png")
-            self.acid_textures.append(texture)
-
-        # Adding Moving Platform Sprite
         self.button_count = 1
         self.lever_count = 1
 
+        super().setup_layer_options(self.lever_count, self.button_count)
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, self.layer_options)
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        super().setup()
+
+        # Adding Moving Platform Sprite
         moving_platform_1 = arcade.Sprite("Assets/Sprites/moving_platform_01.png", PLATFORM_SCALING)
         moving_platform_1.center_x = 1175
         moving_platform_1.center_y = 380
@@ -364,6 +382,7 @@ class LevelZero(GameScreen):
         #self.manager.draw()
         #self.scene.draw()
 
+
 class LevelOne(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
@@ -374,52 +393,22 @@ class LevelOne(GameScreen):
 
         # name of map to load
         map_name = "Assets\\Maps\\Level_1_map.json"
-        layer_options = {
-            "Platforms": {
-                "use_spatial_hash": True,
-            },
-            "Dont Touch": {
-                "use_spatial_hash": True,
-            },
-            "Lever 1": {
-                "use_spatial_hash": True,
-            },
-            "Lever 2": {
-                "use_spatial_hash": True,
-            },
-            "Button 1": {
-                "use_spatial_hash": True,
-            },
-            "Button 2": {
-                "use_spatial_hash": True,
-            },
-            "Button 3": {
-                "use_spatial_hash": True,
-            },
-            "Button 4": {
-                "use_spatial_hash": True,
-            },
-            "Button 5": {
-                "use_spatial_hash": True,
-            },
-            "Button 6": {
-                "use_spatial_hash": True,
-            },
-            "Door": {
-                "use_spatial_hash": True,
-            },
-        }
 
-        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+        self.button_count = 6
+        self.lever_count = 2
+
+        super().setup_layer_options(self.lever_count, self.button_count)
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, self.layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        super().setup()
 
         # Lever animation setup
         self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
         self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
 
         # Add in moving platforms
-        self.button_count = 6
-        self.lever_count = 2
 
         # Lever platforms here
         lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
@@ -539,6 +528,7 @@ class LevelOne(GameScreen):
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
+
 class LevelTwo(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
@@ -549,40 +539,17 @@ class LevelTwo(GameScreen):
 
         # name of map to load
         map_name = "Assets\\Maps\\Level_2_map.json"
-        layer_options = {
-            "Platforms": {
-                "use_spatial_hash": True,
-            },
-            "Dont Touch": {
-                "use_spatial_hash": True,
-            },
-            "Lever 1": {
-                "use_spatial_hash": True,
-            },
-            "Button 1": {
-                "use_spatial_hash": True,
-            },
-            "Door": {
-                "use_spatial_hash": True,
-            },
-        }
 
-        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
-        self.scene = arcade.Scene.from_tilemap(self.tile_map)
-
-        # Lever animation setup
-        self.flipped_right = arcade.load_texture("Assets/Sprites/Levers/lever_0.png")
-        self.flipped_left = arcade.load_texture("Assets/Sprites/Levers/lever_1.png")
-
-        # Acid animation setup
-        self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
-        for i in range(4):
-            texture = arcade.load_texture(f"Assets/Sprites/Acid/acid_{i}.png")
-            self.acid_textures.append(texture)
-
-        # Adding Moving Platform Sprite
         self.button_count = 8
         self.lever_count = 1
+        super().setup_layer_options(self.lever_count, self.button_count)
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, self.layer_options)
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        super().setup()
+
+        # Adding Moving Platform Sprite
 
         # Button platforms here
         button_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
@@ -698,6 +665,7 @@ class LevelTwo(GameScreen):
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
+
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""
     return [
@@ -717,6 +685,8 @@ class PlayerCharacter(SpecialSprite):
     def __init__(self, main_path, scaling):
         super().__init__()
 
+        self.death = False
+        self.death_ctr = 0
         self.character_face_direction = RIGHT_FACE
 
         # Used for flipping between image sequences
@@ -749,6 +719,12 @@ class PlayerCharacter(SpecialSprite):
 
     def update_animation(self, delta_time: float = 1 / 60):
 
+        # Death Animation
+        if self.death:
+            self.death_ctr += 1
+            if self.death_ctr < 8:
+                self.texture = self.death_textures[self.death_ctr][self.character_face_direction]
+
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.character_face_direction == RIGHT_FACE:
             self.character_face_direction = LEFT_FACE
@@ -767,6 +743,13 @@ class PlayerCharacter(SpecialSprite):
         frame = self.cur_texture // PLAYER_UPDATES_PER_FRAME
         direction = self.character_face_direction
         self.texture = self.walk_textures[frame][direction]
+
+    def die(self):
+        self.death = True
+
+    def alive(self):
+        self.death_ctr = 0
+        self.death = False
 
 
 class MagicObject(SpecialSprite):
@@ -942,6 +925,10 @@ class Reset(Command):
         self.gs = gs
 
     def __call__(self):
+        self.gs.wizard.die()
+        self.gs.familiar.die()
+
+        # Implement a thread here:
         self.gs.setup()
 
     def undo(self):
