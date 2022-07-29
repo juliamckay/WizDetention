@@ -661,12 +661,12 @@ class LevelTwo(GameScreen):
 
         # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
         self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
-        self.wizard.position = (SPAWN_X + 150, SPAWN_Y)
+        self.wizard.position = (SPAWN_X + 130, SPAWN_Y - 40)
         self.scene.add_sprite("Wiz", self.wizard)
 
         # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
         self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
-        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.familiar.position = (SPAWN_X + 110, SPAWN_Y - 50)
         self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
