@@ -510,6 +510,11 @@ class LevelOne(GameScreen):
         self.interact_box.center_y = 140
         self.scene.add_sprite("Interacts", self.interact_box)
 
+        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
+        self.interact_box.center_x = 625
+        self.interact_box.center_y = 372
+        self.scene.add_sprite("Interacts", self.interact_box)
+
         # Load textures for when targeting is occurring
         for i in range(4):
             texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
