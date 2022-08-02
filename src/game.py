@@ -532,7 +532,7 @@ class LevelOne(GameScreen):
 class LevelTwo(GameScreen):
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
-        self.next_level = QuitScreen()
+        self.next_level = LevelThree()
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
@@ -665,6 +665,100 @@ class LevelTwo(GameScreen):
                                                   walls=(self.scene["Platforms"], self.scene["Interacts"]))
         self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
+class LevelThree(GameScreen):
+    def setup(self):
+        """Set up the game here. Call this function to restart the game."""
+        self.next_level = QuitScreen()
+        self.button_plats.clear()
+        self.lever_plats.clear()
+        self.player_on_lever = False
+
+        # name of map to load
+        map_name = "Assets\\Maps\\Level_3_map.json"
+
+        self.button_count = 1
+        self.lever_count = 3
+        super().setup_layer_options(self.lever_count, self.button_count)
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, self.layer_options)
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        super().setup()
+
+        #Add moving platforms
+        # Button platforms here
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        button_plat.center_x = 200
+        button_plat.center_y = 58
+        button_plat.change_x = 0
+        button_plat.change_y = 0
+        self.button_plats.append([button_plat, 470, 200, 'h'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        # Lever platforms here
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        lever_plat.center_x = 810
+        lever_plat.center_y = 58
+        lever_plat.change_x = 0
+        lever_plat.change_y = 0
+        self.lever_plats.append([lever_plat, False, True, 1070, 810, 'h'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
+
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.9)
+        lever_plat.center_x = 740
+        lever_plat.center_y = 75
+        lever_plat.change_x = 0
+        lever_plat.change_y = 0
+        self.lever_plats.append([lever_plat, False, True, 175, 75, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
+
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.9)
+        lever_plat.center_x = 103
+        lever_plat.center_y = 255
+        lever_plat.change_x = 0
+        lever_plat.change_y = 0
+        self.lever_plats.append([lever_plat, False, True, 375, 255, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
+
+        # Player Sprite Setup
+        self.scene.add_sprite_list("Interacts")
+        self.scene.add_sprite_list("Wiz")
+        self.scene.add_sprite_list("Cat")
+        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
+
+        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        self.wizard.position = (45, SPAWN_Y - 40)
+        self.scene.add_sprite("Wiz", self.wizard)
+
+        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        self.familiar.position = (1220, SPAWN_Y - 50)
+        self.scene.add_sprite("Cat", self.familiar)
+
+        # Adding interactable objects
+        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
+        self.interact_box.center_x = 450
+        self.interact_box.center_y = 485
+        self.scene.add_sprite("Interacts", self.interact_box)
+
+        # Load textures for when targeting is occurring
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
+            self.target_anim.append(texture)
+        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
+        self.target_anim_sprite.alpha = 0
+        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+
+        # Input Handler
+        self.ih = InputHandler(self.wizard, self.familiar, self)
+
+        # Physics Engines
+        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""
