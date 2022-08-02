@@ -57,18 +57,33 @@ def button_platform(scene, player1, player2, layer, platform, end, start, move_v
     player_coll = arcade.check_for_collision_with_list(player1, scene[layer]) or \
                     arcade.check_for_collision_with_list(player2, scene[layer])
     if dir == 'v':
-        if player_coll:
-            # Adding moving velocity in moving platform
-            platform.center_y += move_vel
-            # Stop once you reach top
-            if platform.center_y > end:
-                platform.center_y = end
+        if end > start:
+            if player_coll:
+                # Adding moving velocity in moving platform
+                platform.center_y += move_vel
+                # Stop once you reach top
+                if platform.center_y > end:
+                    platform.center_y = end
+            else:
+                # Adding moving velocity in moving platform
+                platform.center_y -= move_vel
+                # Stop once you reach top
+                if platform.center_y < start:
+                    platform.center_y = start
         else:
-            # Adding moving velocity in moving platform
-            platform.center_y -= move_vel
-            # Stop once you reach top
-            if platform.center_y < start:
-                platform.center_y = start
+            if player_coll:
+                # Adding moving velocity in moving platform
+                platform.center_y -= move_vel
+                # Stop once you reach top
+                if platform.center_y < end:
+                    platform.center_y = end
+            else:
+                # Adding moving velocity in moving platform
+                platform.center_y += move_vel
+                # Stop once you reach top
+                if platform.center_y > start:
+                    platform.center_y = start
+
     elif dir == 'h':
         if end > start:
             if player_coll:

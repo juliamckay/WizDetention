@@ -638,8 +638,8 @@ class LevelThree(GameScreen):
         # name of map to load
         map_name = "Assets\\Maps\\Level_3_map.json"
 
-        self.button_count = 1
-        self.lever_count = 3
+        self.button_count = 5
+        self.lever_count = 6
         super().setup_layer_options(self.lever_count, self.button_count)
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, self.layer_options)
@@ -657,6 +657,30 @@ class LevelThree(GameScreen):
         self.button_plats.append([button_plat, 470, 200, 'h'])  # [plat, end, start, dir]
         self.scene.add_sprite("Platforms", button_plat)
 
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        button_plat.center_x = 1120
+        button_plat.center_y = 328
+        self.button_plats.append([button_plat, 1010, 1120, 'h'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.9)
+        button_plat.center_x = 920
+        button_plat.center_y = 365
+        self.button_plats.append([button_plat, 475, 365, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_02.png", 2)
+        button_plat.center_x = 710
+        button_plat.center_y = 420
+        self.button_plats.append([button_plat, 370, 420, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
+        button_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
+        button_plat.center_x = 570
+        button_plat.center_y = 550
+        self.button_plats.append([button_plat, 450, 550, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", button_plat)
+
         # Lever platforms here
         lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
         lever_plat.center_x = 810
@@ -669,29 +693,50 @@ class LevelThree(GameScreen):
         lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.9)
         lever_plat.center_x = 740
         lever_plat.center_y = 75
-        lever_plat.change_x = 0
-        lever_plat.change_y = 0
         self.lever_plats.append([lever_plat, False, True, 175, 75, 'v'])  # [plat, end, start, dir]
         self.scene.add_sprite("Platforms", lever_plat)
 
         lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.9)
         lever_plat.center_x = 103
         lever_plat.center_y = 255
-        lever_plat.change_x = 0
-        lever_plat.change_y = 0
         self.lever_plats.append([lever_plat, False, True, 375, 255, 'v'])  # [plat, end, start, dir]
         self.scene.add_sprite("Platforms", lever_plat)
 
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.9)
+        lever_plat.center_x = 1017
+        lever_plat.center_y = 370
+        self.lever_plats.append([lever_plat, False, True, 475, 370, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
+
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_02_v.png", 1.9)
+        lever_plat.center_x = 952
+        lever_plat.center_y = 340
+        self.lever_plats.append([lever_plat, False, True, 445, 340, 'v'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
+
+        lever_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 1.9)
+        lever_plat.center_x = 820
+        lever_plat.center_y = 345
+        self.lever_plats.append([lever_plat, False, True, 920, 820, 'h'])  # [plat, end, start, dir]
+        self.scene.add_sprite("Platforms", lever_plat)
+
         #Wizard Spawn
-        self.wizard.position = (45, SPAWN_Y - 40)
+        #self.wizard.position = (45, SPAWN_Y - 40)
+        self.wizard.position = (45, SPAWN_Y + 100)
 
         #Familiar Spawn
-        self.familiar.position = (1220, SPAWN_Y - 50)
+        #self.familiar.position = (1220, SPAWN_Y - 50)
+        self.familiar.position = (1220, SPAWN_Y + 100)
 
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
-        self.interact_box.center_x = 450
-        self.interact_box.center_y = 485
+        self.interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.16)
+        self.interact_box.center_x = 585
+        self.interact_box.center_y = 440
+        self.scene.add_sprite("Interacts", self.interact_box)
+
+        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.12)
+        self.interact_box.center_x = 120
+        self.interact_box.center_y = 335
         self.scene.add_sprite("Interacts", self.interact_box)
 
         # Load textures for when targeting is occurring

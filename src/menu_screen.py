@@ -1,6 +1,6 @@
 import arcade
 import arcade.gui
-from src.game import LevelZero, LevelThree
+from src.game import LevelZero, LevelThree, LevelOne
 from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 from src.quit_screen import QuitScreen
