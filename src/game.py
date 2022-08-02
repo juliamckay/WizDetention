@@ -47,7 +47,7 @@ class GameScreen(arcade.View):
         self.curr_targ_anim_count = 0
         self.cooldown = 0
 
-        self.interact_box = None
+        self.box_pe_list = []
         # self.stop_interact_area = None
         # self.new_box = None
 
@@ -74,7 +74,6 @@ class GameScreen(arcade.View):
         # Physics Engine
         self.pe1 = None
         self.pe2 = None
-        self.pe3 = None
         self.ty = None
 
         # Game Audio
@@ -124,6 +123,23 @@ class GameScreen(arcade.View):
             texture = arcade.load_texture(f"Assets/Sprites/Acid/acid_{i}.png")
             self.acid_textures.append(texture)
 
+        # Player Sprite Setup
+        self.scene.add_sprite_list("Interacts")
+        self.scene.add_sprite_list("Targeting")
+        self.scene.add_sprite_list("Wiz")
+        self.scene.add_sprite_list("Cat")
+        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
+
+        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
+        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        self.wizard.position = (SPAWN_X, SPAWN_Y)
+        self.scene.add_sprite("Wiz", self.wizard)
+
+        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
+        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
+        self.scene.add_sprite("Cat", self.familiar)
+
     def on_show_view(self):
         self.setup()
         arcade.set_background_color(arcade.color.GRAY)
@@ -171,18 +187,18 @@ class GameScreen(arcade.View):
         else:
             self.familiar.jumping = True
 
-        self.pe3.update()
+        self.handle_special_object_physics_engines()
 
         # Check for if target is within vision of player character
         # For now, a simple within-range check around the wizard for potential targets
         if self.target:
-            # self.play_target_animation(delta_time)
             self.target_anim_sprite.position = self.target.position
             if(arcade.get_distance(self.wizard.center_x, self.wizard.center_y,
                                    self.target.center_x, self.target.center_y) > 200):
                 # Halt it's movement
                 self.target.change_x = 0
                 self.target.change_y = 0
+                self.cancel_spell()
 
                 # Deselect the target
                 self.target_anim_sprite.alpha = 0
@@ -251,11 +267,6 @@ class GameScreen(arcade.View):
 
             # Implement a thread here:
             self.setup()
-        """
-        if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]):
-            self.wizard.position = (SPAWN_X, SPAWN_Y)
-        if arcade.check_for_collision_with_list(self.familiar, self.scene["Dont Touch"]):
-            self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)"""
 
         # check if BOTH players have collided with door, advance to next level
         # for now it just goes to quit screen since there is no level 2 yet
@@ -280,6 +291,38 @@ class GameScreen(arcade.View):
             self.target_anim_sprite.texture = self.target_anim[self.curr_targ_anim_count]
             self.curr_targ_anim_count = (self.curr_targ_anim_count + 1) % 4
             self.cooldown = 0
+
+    def setup_physics(self):
+        # Physics Engines
+        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
+                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
+
+        # Box Physics
+        self.box_pe_list.clear()
+        for sprite in self.scene["Interacts"]:
+            self.box_pe_list.append(arcade.PhysicsEnginePlatformer(sprite, gravity_constant=0))
+
+    def handle_special_object_physics_engines(self):
+        for pe in self.box_pe_list:
+            pe.update()
+
+    def setup_target_sprites(self):
+        # Load textures for when targeting is occurring
+        for i in range(4):
+            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
+            self.target_anim.append(texture)
+        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
+        self.target_anim_sprite.alpha = 0
+        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+
+    def cancel_spell(self):
+        if not self.wizard.can_move:
+            self.ih.bind(arcade.key.W, JumpCommand(self.wizard))
+            self.ih.bind(arcade.key.A, MoveLeftCommand(self.wizard))
+            self.ih.bind(arcade.key.D, MoveRightCommand(self.wizard))
+
     # endregion
 
 
@@ -292,7 +335,7 @@ class LevelZero(GameScreen):
         """Set up the game here. Call this function to restart the game."""
         self.next_level = LevelOne()
 
-        #text overlay setup
+        # text overlay setup
         self.text_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         # name of map to load
@@ -325,51 +368,19 @@ class LevelZero(GameScreen):
         self.button_plats.append([moving_platform_2, 555, 455, 'v'])    #[plat, max, min]
         self.scene.add_sprite("Platforms", moving_platform_2)
 
-        # self.stop_interact_area = arcade.Sprite("Assets\\Sprites\\red_square.png", 0.15)
-        # self.stop_interact_area.center_x = 570
-        # self.stop_interact_area.center_y = 570
-
-        # self.scene.add_sprite("Interacts", self.stop_interact_area)
-
-        # Player Sprite Setup
-        self.scene.add_sprite_list("Interacts")
-        self.scene.add_sprite_list("Wiz")
-        self.scene.add_sprite_list("Cat")
-        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-
-        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
-        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
-        self.wizard.position = (SPAWN_X, SPAWN_Y)
-        self.scene.add_sprite("Wiz", self.wizard)
-
-        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
-        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
-        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
-        self.scene.add_sprite("Cat", self.familiar)
-
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
-        self.interact_box.center_x = 400
-        self.interact_box.center_y = 595
-        self.scene.add_sprite("Interacts", self.interact_box)
+        interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
+        interact_box.center_x = 400
+        interact_box.center_y = 595
+        self.scene.add_sprite("Interacts", interact_box)
+
+        super().setup_physics()
 
         # Load textures for when targeting is occurring
-        for i in range(4):
-            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
-            self.target_anim.append(texture)
-        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
-        self.target_anim_sprite.alpha = 0
-        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+        super().setup_target_sprites()
 
         # Input Handler
         self.ih = InputHandler(self.wizard, self.familiar, self)
-
-        # Physics Engines
-        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
 
     def on_draw(self):
         super(LevelZero, self).on_draw()
@@ -476,41 +487,18 @@ class LevelOne(GameScreen):
         self.button_plats.append([button_plat_2, 735, 635, 'v'])
         self.scene.add_sprite("Platforms", button_plat_2)
 
-        # Player Sprite Setup
-        self.scene.add_sprite_list("Interacts")
-        self.scene.add_sprite_list("Wiz")
-        self.scene.add_sprite_list("Cat")
-        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-        #self.scene.add_sprite_list_after("Wiz", "Foreground")
-
-        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
-        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
-        self.wizard.position = (SPAWN_X, SPAWN_Y)
-        self.scene.add_sprite("Wiz", self.wizard)
-
-        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
-        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
-        self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
-        self.scene.add_sprite("Cat", self.familiar)
-
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.15)
-        self.interact_box.center_x = 480
-        self.interact_box.center_y = 140
-        self.scene.add_sprite("Interacts", self.interact_box)
+        interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.15)
+        interact_box.center_x = 480
+        interact_box.center_y = 140
+        self.scene.add_sprite("Interacts", interact_box)
 
-        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
-        self.interact_box.center_x = 625
-        self.interact_box.center_y = 372
-        self.scene.add_sprite("Interacts", self.interact_box)
+        interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
+        interact_box.center_x = 625
+        interact_box.center_y = 372
+        self.scene.add_sprite("Interacts", interact_box)
 
-        # Load textures for when targeting is occurring
-        for i in range(4):
-            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
-            self.target_anim.append(texture)
-        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
-        self.target_anim_sprite.alpha = 0
-        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+        super().setup_target_sprites()
 
         # Acid animation setup
         self.acid_hazard_list = self.tile_map.sprite_lists.get("Dont Touch")
@@ -521,12 +509,7 @@ class LevelOne(GameScreen):
         # Input Handler
         self.ih = InputHandler(self.wizard, self.familiar, self)
 
-        # Physics Engines
-        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
+        super().setup_physics()
 
 
 class LevelTwo(GameScreen):
@@ -550,7 +533,6 @@ class LevelTwo(GameScreen):
         super().setup()
 
         # Adding Moving Platform Sprite
-
         # Button platforms here
         button_plat = arcade.Sprite("Assets/Sprites/moving_platform_01.png", 2)
         button_plat.center_x = 80
@@ -625,45 +607,25 @@ class LevelTwo(GameScreen):
         self.lever_plats.append([lever_plat, False, True, 200, 80, 'h'])  # [plat, end, start, dir]
         self.scene.add_sprite("Platforms", lever_plat)
 
-        # Player Sprite Setup
-        self.scene.add_sprite_list("Interacts")
-        self.scene.add_sprite_list("Wiz")
-        self.scene.add_sprite_list("Cat")
-        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-
-        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
-        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        # Setup Wizard spawn
         self.wizard.position = (SPAWN_X + 130, SPAWN_Y - 40)
-        self.scene.add_sprite("Wiz", self.wizard)
 
-        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
-        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        # Setup Familiar spawn
         self.familiar.position = (SPAWN_X + 110, SPAWN_Y - 50)
-        self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
-        self.interact_box.center_x = 455
-        self.interact_box.center_y = 275
-        self.scene.add_sprite("Interacts", self.interact_box)
+        interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
+        interact_box.center_x = 455
+        interact_box.center_y = 275
+        self.scene.add_sprite("Interacts", interact_box)
 
         # Load textures for when targeting is occurring
-        for i in range(4):
-            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
-            self.target_anim.append(texture)
-        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
-        self.target_anim_sprite.alpha = 0
-        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+        super().setup_target_sprites()
 
         # Input Handler
         self.ih = InputHandler(self.wizard, self.familiar, self)
 
-        # Physics Engines
-        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
+        super().setup_physics()
 
 
 def load_texture_pair(filename):
@@ -888,6 +850,9 @@ class SpellCommand(Command):
         self.ih.bind(arcade.key.D, MoveBoxRightCommand(self.target))
 
     def undo(self):
+        if self.target:
+            self.target.change_x = 0
+            self.target.change_y = 0
         self.ih.bind(arcade.key.W, JumpCommand(self.sprite))
         self.ih.bind(arcade.key.A, MoveLeftCommand(self.sprite))
         self.ih.bind(arcade.key.D, MoveRightCommand(self.sprite))
@@ -899,7 +864,10 @@ class MoveBoxRightCommand(MoveRightCommand):
         super().__init__(sprite)
 
     def __call__(self):
-        super().__call__()
+        self.called = self.sprite.can_move
+        if self.called:
+            self.sprite.change_x += PLAYER_MS
+        # super().__call__()
 
     def undo(self):
         if self.called and self.sprite.can_move:
