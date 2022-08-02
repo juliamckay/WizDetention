@@ -721,12 +721,12 @@ class LevelThree(GameScreen):
         self.scene.add_sprite("Platforms", lever_plat)
 
         #Wizard Spawn
-        #self.wizard.position = (45, SPAWN_Y - 40)
-        self.wizard.position = (45, SPAWN_Y + 100)
+        self.wizard.position = (45, SPAWN_Y - 40)
+        #self.wizard.position = (45, SPAWN_Y + 100)
 
         #Familiar Spawn
-        #self.familiar.position = (1220, SPAWN_Y - 50)
-        self.familiar.position = (1220, SPAWN_Y + 100)
+        self.familiar.position = (1220, SPAWN_Y - 50)
+        #self.familiar.position = (1220, SPAWN_Y + 100)
 
         # Adding interactable objects
         self.interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.16)
