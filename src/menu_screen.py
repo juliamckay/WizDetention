@@ -71,7 +71,7 @@ class MenuScreen(arcade.View):
         arcade.exit()
 
     def on_click_start(self, event):
-        game_screen = LevelThree()
+        game_screen = LevelZero()
         self.window.show_view(game_screen)
 
     def on_click_credits(self, event):

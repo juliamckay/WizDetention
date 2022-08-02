@@ -682,21 +682,11 @@ class LevelThree(GameScreen):
         self.lever_plats.append([lever_plat, False, True, 375, 255, 'v'])  # [plat, end, start, dir]
         self.scene.add_sprite("Platforms", lever_plat)
 
-        # Player Sprite Setup
-        self.scene.add_sprite_list("Interacts")
-        self.scene.add_sprite_list("Wiz")
-        self.scene.add_sprite_list("Cat")
-        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-
-        # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
-        self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
+        #Wizard Spawn
         self.wizard.position = (45, SPAWN_Y - 40)
-        self.scene.add_sprite("Wiz", self.wizard)
 
-        # self.familiar_sprite = arcade.Sprite("Assets/Sprites/Familiar/familiar_idle.png", FAMILIAR_SCALING)
-        self.familiar = PlayerCharacter("Assets/Sprites/Familiar/familiar", FAMILIAR_SCALING)
+        #Familiar Spawn
         self.familiar.position = (1220, SPAWN_Y - 50)
-        self.scene.add_sprite("Cat", self.familiar)
 
         # Adding interactable objects
         self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.15)
@@ -705,22 +695,12 @@ class LevelThree(GameScreen):
         self.scene.add_sprite("Interacts", self.interact_box)
 
         # Load textures for when targeting is occurring
-        for i in range(4):
-            texture = arcade.load_texture(f"Assets/Sprites/Targets/TargetT1_{i}.png")
-            self.target_anim.append(texture)
-        self.target_anim_sprite = arcade.Sprite("Assets/Sprites/Targets/TargetT1_0.png")
-        self.target_anim_sprite.alpha = 0
-        self.scene.add_sprite("Targeting", self.target_anim_sprite)
+        super().setup_target_sprites()
 
         # Input Handler
         self.ih = InputHandler(self.wizard, self.familiar, self)
 
-        # Physics Engines
-        self.pe1 = arcade.PhysicsEnginePlatformer(self.wizard, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe2 = arcade.PhysicsEnginePlatformer(self.familiar, gravity_constant=GRAVITY,
-                                                  walls=(self.scene["Platforms"], self.scene["Interacts"]))
-        self.pe3 = arcade.PhysicsEnginePlatformer(self.interact_box, gravity_constant=0)
+        super().setup_physics()
 
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""
