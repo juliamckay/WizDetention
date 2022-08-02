@@ -14,8 +14,12 @@ class GameScreen(arcade.View):
         super().__init__()
         arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
 
-        #Next scene to load
+        # Next scene to load
         self.next_level = None
+
+        # Set up reset fade
+        self.fade_view = None
+        self.resetting = False
 
         # Create the manager
         self.manager = arcade.gui.UIManager()
@@ -146,6 +150,8 @@ class GameScreen(arcade.View):
             command.undo()
 
     def on_update(self, delta_time):
+
+        self.fade_view.update_fade()
 
         # Update the players animation
         self.wizard.update_animation()
@@ -337,6 +343,9 @@ class LevelZero(GameScreen):
         self.scene.add_sprite_list("Cat")
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
 
+        # set up fade
+        self.fade_view = FadeView(self)
+
         # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
         self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
         self.wizard.position = (SPAWN_X, SPAWN_Y)
@@ -375,10 +384,15 @@ class LevelZero(GameScreen):
         super(LevelZero, self).on_draw()
 
         self.text_camera.use()
+
+        if self.resetting:
+            self.fade_view.draw_fading()
+
         arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 700, arcade.color.AFRICAN_VIOLET, 12, 80)
         arcade.draw_text("Only the cat can fit through that...", 800, 150, arcade.color.AMBER, 12, 80)
         arcade.draw_text("Press R to reset the level", 40, 270, arcade.color.WHITE, 12, 80)
         arcade.draw_text("Press Esc to quit the game", 40, 250, arcade.color.WHITE, 12, 80)
+
         #self.manager.draw()
         #self.scene.draw()
 
@@ -925,11 +939,35 @@ class Reset(Command):
         self.gs = gs
 
     def __call__(self):
+        self.gs.resetting = True
         self.gs.wizard.die()
         self.gs.familiar.die()
 
         # Implement a thread here:
         self.gs.setup()
+
+    def undo(self):
+        return
+
+
+class FadeView(GameScreen):
+    """Fade effect on level reset"""
+    def __init__(self, gs: GameScreen):
+        super().__init__()
+        self.fade_in = 255
+        self.gs = gs
+
+    def update_fade(self):
+        if self.fade_in is not None:
+            self.fade_in -= FADE_RATE
+            if self.fade_in <= 0:
+                self.fade_in = None
+
+    def draw_fading(self):
+        if self.fade_in is not None:
+            arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
+                                         SCREEN_WIDTH, SCREEN_HEIGHT,
+                                         (0, 0, 0, self.fade_in))
 
     def undo(self):
         return
