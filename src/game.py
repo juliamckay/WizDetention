@@ -298,6 +298,9 @@ class LevelZero(GameScreen):
         """Set up the game here. Call this function to restart the game."""
         self.next_level = LevelOne()
 
+        # set up fade
+        self.fade_view = FadeView(self)
+
         #text overlay setup
         self.text_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
 
@@ -342,9 +345,6 @@ class LevelZero(GameScreen):
         self.scene.add_sprite_list("Wiz")
         self.scene.add_sprite_list("Cat")
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-
-        # set up fade
-        self.fade_view = FadeView(self)
 
         # self.wizard_sprite = arcade.Sprite("Assets/Sprites/Wizard/wizard_idle.png", WIZARD_SCALING)
         self.wizard = PlayerCharacter("Assets/Sprites/Wizard/wizard", WIZARD_SCALING)
