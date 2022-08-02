@@ -1,6 +1,6 @@
 import arcade
 import arcade.gui
-from src.game import LevelZero, LevelOne, LevelTwo
+from src.game import LevelZero, LevelThree
 from src.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 from src.quit_screen import QuitScreen
@@ -71,7 +71,7 @@ class MenuScreen(arcade.View):
         arcade.exit()
 
     def on_click_start(self, event):
-        game_screen = LevelZero()
+        game_screen = LevelThree()
         self.window.show_view(game_screen)
 
     def on_click_credits(self, event):
