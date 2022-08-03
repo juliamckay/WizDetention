@@ -1061,10 +1061,15 @@ class SpellCommand(Command):
         self.ih = ih
         self.view = view
         self.target = None
+        self.called = False
 
     def __call__(self):
         """Locks wizard movement and Calls a function back in game.py that returns the target sprite to move instead"""
         # First, unbind wizard movements and halt all movement
+        if not self.sprite.can_move:
+            return
+
+        self.called = True
         self.sprite.change_x = 0
         self.sprite.change_y = 0
         self.sprite.can_move = False
@@ -1079,6 +1084,9 @@ class SpellCommand(Command):
         self.ih.bind(arcade.key.D, MoveBoxRightCommand(self.target))
 
     def undo(self):
+        if not self.called:
+            return
+
         if self.target:
             self.target.change_x = 0
             self.target.change_y = 0
