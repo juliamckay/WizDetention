@@ -51,6 +51,7 @@ WizardDetention/
 │       ├── open_window.py
 │       └── quit_screen.py
 ├── installer.cfg
+├── LICENSE
 ├── README.md
 └── WizardDetention_1.0.0.exe
 ```
