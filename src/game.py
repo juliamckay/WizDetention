@@ -360,6 +360,8 @@ class GameScreen(arcade.View):
         self.wizard.die()
         self.familiar.die()
 
+        arcade.play_sound(self.death_noise, 1.0, 0.0, False, 1.0)
+
         self.toggle_movements(False)
         # Fade view
         self.fading = True
