@@ -168,19 +168,7 @@ class GameScreen(arcade.View):
         self.manager.draw()
         self.scene.draw()
 
-        if self.fading:
-            # 1st, fade out until fade val is 255
-            self.draw_fading()
-            if self.fade_state == 1 and self.fade_val >= 255:
-                # Then, setup() to reset the level
-                self.setup()
-                # Finally, fade in
-                self.fade_state = -1
-
-        if self.fading and self.fade_state == -1 and self.fade_val <= 0:
-            # reset up fade after setup is done
-            self.fade_state = 1
-            self.fading = False
+        self.handle_fade()
 
     def on_key_press(self, key, mods):
         """Delegated to the input handler"""
@@ -308,10 +296,7 @@ class GameScreen(arcade.View):
             else:
                 self.next_level.main_player = self.main_player
 
-            self.fading = True
-            self.nl = True
-
-            self.toggle_movements(False)
+            self.next_level_prep()
 
     # region helpers
 
@@ -385,13 +370,42 @@ class GameScreen(arcade.View):
                 self.fade_val = 0
 
     def toggle_movements(self, boolean):
+        # Wizard
         self.wizard.can_move = boolean
+        self.wizard.change_x = 0
+        self.wizard.change_y = 0
+        # Familiar
         self.familiar.can_move = boolean
-
+        self.familiar.change_x = 0
+        self.familiar.change_y = 0
+        # Interact Objects
         for obj in self.scene["Interacts"]:
             obj.can_move = boolean
             obj.change_x = 0
             obj.change_y = 0
+
+    def next_level_prep(self):
+        self.fading = True
+        self.nl = True
+        self.toggle_movements(False)
+
+    def handle_fade(self):
+        if self.fading and self.fade_state == -1 and self.fade_val <= 0:
+            # reset up fade after setup is done
+            self.fade_state = 1
+            self.fading = False
+
+        if self.fading:
+            # 1st, fade out until fade val is 255
+            self.draw_fading()
+            if self.fade_state == 1 and self.fade_val >= 255:
+                # Then, setup() or next_level() while no one can see
+                if self.nl:
+                    self.window.show_view(self.next_level)
+                else:
+                    self.setup()
+                # Finally, fade in
+                self.fade_state = -1
 
     # endregion
 
@@ -464,22 +478,7 @@ class LevelZero(GameScreen):
         arcade.draw_text("Press R to reset the level", 40, 270, arcade.color.WHITE, 12, 80)
         arcade.draw_text("Press Esc to quit the game", 40, 250, arcade.color.WHITE, 12, 80)
 
-        if self.fading and self.fade_state == -1 and self.fade_val <= 0:
-            # reset up fade after setup is done
-            self.fade_state = 1
-            self.fading = False
-
-        if self.fading:
-            # 1st, fade out until fade val is 255
-            self.draw_fading()
-            if self.fade_state == 1 and self.fade_val >= 255:
-                # Then, setup() or next_level() while no one can see
-                if self.nl:
-                    self.window.show_view(self.next_level)
-                else:
-                    self.setup()
-                # Finally, fade in
-                self.fade_state = -1
+        super().handle_fade()
 
 
 class LevelOne(GameScreen):
@@ -969,7 +968,8 @@ class InputHandler:
                 arcade.key.RIGHT: MoveRightCommand(cat),
                 arcade.key.UP: JumpCommand(cat),
                 arcade.key.R: Reset(view),
-                arcade.key.ESCAPE: Quit(view)
+                arcade.key.ESCAPE: Quit(view),
+                arcade.key.L: SkipLevel(view)
             }
 
     def handle_input(self, key_pressed):
@@ -1129,4 +1129,19 @@ class Quit(Command):
 
     def undo(self):
         return
+
+
+class SkipLevel(Command):
+    """Skip to the next level if one exists"""
+    def __init__(self, gs: GameScreen):
+        super().__init__(None)
+        self.gs = gs
+
+    def __call__(self):
+        if self.gs.next_level:
+            self.gs.next_level_prep()
+
+    def undo(self):
+        return
+
 # endregion
