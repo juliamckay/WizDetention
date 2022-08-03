@@ -86,12 +86,14 @@ class GameScreen(arcade.View):
         self.death_noise = arcade.load_sound("Assets/Audio/noise-hit-1.mp3", False)
 
         # set up fade
-        self.fade_val = 0
+        self.fade_val = 255
 
-        # fade state: 1 = fade_out, 0 = fade_in
-        self.fade_state = 1
+        # fade state: 1 = fade_out, -1 = fade_in
+        self.fade_state = -1
+        self.fading = True
 
         self.dying = False
+        self.nl = False
 
     def setup_layer_options(self, lever_count=1, button_count=1):
         self.layer_options = {
@@ -153,6 +155,7 @@ class GameScreen(arcade.View):
         self.scene.add_sprite("Cat", self.familiar)
 
         self.dying = False
+        self.nl = False
 
     def on_show_view(self):
         self.setup()
@@ -303,8 +306,8 @@ class GameScreen(arcade.View):
             else:
                 self.next_level.main_player = self.main_player
 
-            # Implement a thread here:
-            self.window.show_view(self.next_level)
+            self.fading = True
+            self.nl = True
 
     # region helpers
 
@@ -435,7 +438,10 @@ class LevelZero(GameScreen):
         self.ih = InputHandler(self.wizard, self.familiar, self)
 
     def on_draw(self):
-        super().on_draw()
+        self.clear()
+        self.manager.draw()
+        self.scene.draw()
+
         self.text_camera.use()
 
         arcade.draw_text("Hey Wizard! Hold S when close to possess the box! [No Jumping]", 150, 700,
@@ -443,8 +449,23 @@ class LevelZero(GameScreen):
         arcade.draw_text("Only the cat can fit through that...", 800, 150, arcade.color.AMBER, 12, 80)
         arcade.draw_text("Press R to reset the level", 40, 270, arcade.color.WHITE, 12, 80)
         arcade.draw_text("Press Esc to quit the game", 40, 250, arcade.color.WHITE, 12, 80)
-        #self.manager.draw()
-        #self.scene.draw()
+
+        if self.fading and self.fade_state == -1 and self.fade_val <= 0:
+            # reset up fade after setup is done
+            self.fade_state = 1
+            self.fading = False
+
+        if self.fading:
+            # 1st, fade out until fade val is 255
+            self.draw_fading()
+            if self.fade_state == 1 and self.fade_val >= 255:
+                # Then, setup() or next_level() while no one can see
+                if self.nl:
+                    self.window.show_view(self.next_level)
+                else:
+                    self.setup()
+                # Finally, fade in
+                self.fade_state = -1
 
 
 class LevelOne(GameScreen):
