@@ -79,8 +79,10 @@ class MenuScreen(arcade.View):
             width=SCREEN_WIDTH / 2,
             height=SCREEN_HEIGHT / 2,
             message_text=(
-                "\n     Credits Screen\n"
-                "       Game made by Julia McKay, Chandler Fox, and Audrey DeHoog"
+                "\n     Credits Screen\n\n"
+                "       Game made by Julia McKay, Chandler Fox, and Audrey DeHoog\n"
+                "       Audio from freesound.org\n"
+                "       Sprites and other game art from itch.io\n"
             ),
             buttons=["Back"]
         )
