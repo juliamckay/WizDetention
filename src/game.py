@@ -976,7 +976,7 @@ class InputHandler:
                 arcade.key.R: Reset(view),
                 arcade.key.ESCAPE: Quit(view),
                 arcade.key.L: SkipLevel(view),
-                arcade.key.P: AlternateTargets(view)
+                arcade.key.E: AlternateTargets(view)
             }
 
     def handle_input(self, key_pressed):
