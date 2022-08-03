@@ -84,6 +84,7 @@ class GameScreen(arcade.View):
         self.main_theme = arcade.load_sound("Assets/Audio/8bit-harmony.wav", False)
         self.main_player = None
         self.death_noise = arcade.load_sound("Assets/Audio/noise-hit-1.mp3", False)
+        self.level_transition = arcade.load_sound("Assets/Audio/door-close.wav", False)
 
         # set up fade
         self.fade_val = 255
@@ -160,6 +161,7 @@ class GameScreen(arcade.View):
         self.toggle_movements(True)
 
     def on_show_view(self):
+        arcade.play_sound(self.level_transition, 1.0, 0.0, False, 1.0)
         self.setup()
         arcade.set_background_color(arcade.color.GRAY)
 
