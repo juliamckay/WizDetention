@@ -1,10 +1,11 @@
 import arcade
+import time
+import threading
 from abc import abstractmethod
 import arcade.gui
 from src.constants import *
 from src.env_interaction import *
 from src.quit_screen import QuitScreen
-from src.constants import ACID_UPDATES_PER_FRAME, PLAYER_UPDATES_PER_FRAME
 
 
 class GameScreen(arcade.View):
@@ -18,8 +19,7 @@ class GameScreen(arcade.View):
         self.next_level = None
 
         # Set up reset fade
-        self.fade_view = None
-        self.resetting = False
+        self.fading = False
 
         # Create the manager
         self.manager = arcade.gui.UIManager()
@@ -85,6 +85,14 @@ class GameScreen(arcade.View):
         self.main_player = None
         self.death_noise = arcade.load_sound("Assets/Audio/noise-hit-1.mp3", False)
 
+        # set up fade
+        self.fade_val = 0
+
+        # fade state: 1 = fade_out, 0 = fade_in
+        self.fade_state = 1
+
+        self.dying = False
+
     def setup_layer_options(self, lever_count=1, button_count=1):
         self.layer_options = {
             "Platforms": {
@@ -144,6 +152,8 @@ class GameScreen(arcade.View):
         self.familiar.position = (SPAWN_X + 30, SPAWN_Y - 10)
         self.scene.add_sprite("Cat", self.familiar)
 
+        self.dying = False
+
     def on_show_view(self):
         self.setup()
         arcade.set_background_color(arcade.color.GRAY)
@@ -152,6 +162,20 @@ class GameScreen(arcade.View):
         self.clear()
         self.manager.draw()
         self.scene.draw()
+
+        if self.fading:
+            # 1st, fade out until fade val is 255
+            self.draw_fading()
+            if self.fade_state == 1 and self.fade_val >= 255:
+                # Then, setup() to reset the level
+                self.setup()
+                # Finally, fade in
+                self.fade_state = -1
+
+        if self.fading and self.fade_state == -1 and self.fade_val <= 0:
+            # reset up fade after setup is done
+            self.fade_state = 1
+            self.fading = False
 
     def on_key_press(self, key, mods):
         """Delegated to the input handler"""
@@ -167,7 +191,7 @@ class GameScreen(arcade.View):
 
     def on_update(self, delta_time):
 
-        self.fade_view.update_fade()
+        self.update_fade()
 
         # Update the players animation
         self.wizard.update_animation()
@@ -265,14 +289,10 @@ class GameScreen(arcade.View):
                                              current_plat[5])
 
         # See if player has collided w anything from the Don't Touch layer
-        if arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]) or \
-                arcade.check_for_collision_with_list(self.familiar, self.scene["Dont Touch"]):
-            # Death for the players here
-            self.wizard.die()
-            self.familiar.die()
-
-            # Implement a thread here:
-            self.setup()
+        if (arcade.check_for_collision_with_list(self.wizard, self.scene["Dont Touch"]) or
+                arcade.check_for_collision_with_list(self.familiar, self.scene["Dont Touch"])) and not self.dying:
+            self.reset()
+            self.dying = True
 
         # check if BOTH players have collided with door, advance to next level
         # for now it just goes to quit screen since there is no level 2 yet
@@ -329,6 +349,33 @@ class GameScreen(arcade.View):
             self.ih.bind(arcade.key.A, MoveLeftCommand(self.wizard))
             self.ih.bind(arcade.key.D, MoveRightCommand(self.wizard))
 
+    def reset(self):
+        self.wizard.die()
+        self.familiar.die()
+        # Fade view
+        self.fading = True
+
+    def reset_target(self):
+        self.setup()
+
+    def toggle_fade(self):
+        self.fade_state *= -1
+
+    def draw_fading(self):
+        if 255 >= self.fade_val >= 0:
+            arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
+                                         SCREEN_WIDTH, SCREEN_HEIGHT,
+                                         (0, 0, 0, self.fade_val))
+
+    def update_fade(self):
+        if 255 >= self.fade_val >= 0 and self.fading:
+            self.fade_val += FADE_RATE * self.fade_state
+            if self.fade_val > 255:
+                self.fade_val = 255
+            elif self.fade_val < 0:
+                self.fade_val = 0
+
+
     # endregion
 
 
@@ -336,14 +383,10 @@ class LevelZero(GameScreen):
     def __init__(self):
         super().__init__()
         self.text_camera = None
+        self.next_level = LevelOne()
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
-        self.next_level = LevelOne()
-
-        # set up fade
-        self.fade_view = FadeView(self)
-
         # text overlay setup
         self.text_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
 
@@ -392,14 +435,11 @@ class LevelZero(GameScreen):
         self.ih = InputHandler(self.wizard, self.familiar, self)
 
     def on_draw(self):
-        super(LevelZero, self).on_draw()
-
+        super().on_draw()
         self.text_camera.use()
 
-        if self.resetting:
-            self.fade_view.draw_fading()
-
-        arcade.draw_text("Hey Wizard! Hold S when close to move the box!", 150, 700, arcade.color.AFRICAN_VIOLET, 12, 80)
+        arcade.draw_text("Hey Wizard! Hold S when close to possess the box! [No Jumping]", 150, 700,
+                         arcade.color.AFRICAN_VIOLET, 12, 80)
         arcade.draw_text("Only the cat can fit through that...", 800, 150, arcade.color.AMBER, 12, 80)
         arcade.draw_text("Press R to reset the level", 40, 270, arcade.color.WHITE, 12, 80)
         arcade.draw_text("Press Esc to quit the game", 40, 250, arcade.color.WHITE, 12, 80)
@@ -408,12 +448,15 @@ class LevelZero(GameScreen):
 
 
 class LevelOne(GameScreen):
+    def __init__(self):
+        super().__init__()
+        self.next_level = LevelTwo()
+
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
-        self.next_level = LevelTwo()
 
         # name of map to load
         map_name = "Assets\\Maps\\Level_1_map.json"
@@ -526,9 +569,12 @@ class LevelOne(GameScreen):
 
 
 class LevelTwo(GameScreen):
+    def __init__(self):
+        super().__init__()
+        self.next_level = LevelThree()
+
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
-        self.next_level = LevelThree()
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
@@ -640,10 +686,14 @@ class LevelTwo(GameScreen):
 
         super().setup_physics()
 
+
 class LevelThree(GameScreen):
+    def __init__(self):
+        super().__init__()
+        self.next_level = QuitScreen()
+
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
-        self.next_level = QuitScreen()
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
@@ -760,6 +810,7 @@ class LevelThree(GameScreen):
 
         super().setup_physics()
 
+
 def load_texture_pair(filename):
     """Load a texture pair from the file at filename"""
     return [
@@ -815,9 +866,10 @@ class PlayerCharacter(SpecialSprite):
 
         # Death Animation
         if self.death:
-            self.death_ctr += 1
-            if self.death_ctr < 8:
-                self.texture = self.death_textures[self.death_ctr][self.character_face_direction]
+            self.death_ctr = (self.death_ctr + 1) % (8 * PLAYER_UPDATES_PER_FRAME)
+            frame = self.death_ctr // PLAYER_UPDATES_PER_FRAME
+            self.texture = self.death_textures[frame][self.character_face_direction]
+            return
 
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.character_face_direction == RIGHT_FACE:
@@ -832,18 +884,23 @@ class PlayerCharacter(SpecialSprite):
 
         # Walking animation
         self.cur_texture += 1
-        if self.cur_texture > 7 * PLAYER_UPDATES_PER_FRAME:
+        if self.cur_texture > (8 * PLAYER_UPDATES_PER_FRAME) - 1:
             self.cur_texture = 0
         frame = self.cur_texture // PLAYER_UPDATES_PER_FRAME
         direction = self.character_face_direction
         self.texture = self.walk_textures[frame][direction]
 
     def die(self):
+        self.death_ctr = 0
         self.death = True
+        self.change_x = 0
+        self.change_y = 0
+        self.can_move = False
 
     def alive(self):
         self.death_ctr = 0
         self.death = False
+        self.can_move = True
 
 
 class MagicObject(SpecialSprite):
@@ -1025,37 +1082,7 @@ class Reset(Command):
         self.gs = gs
 
     def __call__(self):
-        self.gs.wizard.die()
-        self.gs.familiar.die()
-
-        # Fade view
-        self.gs.resetting = True
-
-        # Implement a thread here:
-        self.gs.setup()
-
-    def undo(self):
-        return
-
-
-class FadeView(GameScreen):
-    """Fade effect on level reset"""
-    def __init__(self, gs: GameScreen):
-        super().__init__()
-        self.fade_in = 255
-        self.gs = gs
-
-    def update_fade(self):
-        if self.fade_in is not None:
-            self.fade_in -= FADE_RATE
-            if self.fade_in <= 0:
-                self.fade_in = None
-
-    def draw_fading(self):
-        if self.fade_in is not None:
-            arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
-                                         SCREEN_WIDTH, SCREEN_HEIGHT,
-                                         (0, 0, 0, self.fade_in))
+        self.gs.reset()
 
     def undo(self):
         return
