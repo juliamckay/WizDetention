@@ -6,23 +6,35 @@ They have been banished to the Detention Dimension for bad behavior.
 The wizard and their familiar must work together to navigate the various puzzles within the Detention Dimension and find
 a way to escape or be locked in detention forever!
 
-### Installation
-In the command prompt, navigate inside the nsis folder where WizardDetention_0.0.1.exe is located and run the installer
+### Build Process
+To begin the building process, navigate within the terminal to the unzipped WizardDetention folder. 
+
+Install Pynsist with this command:
+```
+pip install pynsist
+```
+Utilizing the installer.cfg, build the installer with this command:
+```
+python -m nsist installer.cfg
+```
+This will create a build folder. Inside the build folder, the installer is located within the nsis folder as WizardDetention_1.0.0.exe
+
+### Installation with double-click executable installer
+Launch the installer, WizardDetention_1.0.0.exe, by double-clicking the executable. Follow the instructions for instillation. 
+
+Once the game is finished installing, it can be launched by double-clicking the file WizardDetention.launch.pyw.
+
+### Installation with command lines
+In the command prompt, navigate inside the nsis folder where WizardDetention_1.0.0.exe is located and run the installer
 with the command:
 ```
-start WizardDetention_0.0.1
+start WizardDetention_1.0.0
 ```
-
 Once the package is done installing, navigate to the folder you downloaded the game into where WizardDetention.launch.pyw 
 is located and run the game with the command:
 ```
 WizardDetention.launch.pyw
 ```
-If there are any issues running WizardDetention_0.0.1.exe or WizardDetention.launch from the command prompt,
-both can be run by double-clicking them in the file explorer.
-### Links
-[Github] (https://github.com/juliamckay/WizDetention)
-[Gzipped Tar Archive] (https://github.com/juliamckay/WizDetention/tree/master/dist)
 
 ### WizardDetention.tar.gz Contents
 File Structure:
@@ -32,7 +44,6 @@ WizardDetention/
 │   ├── Assets/
 │   └── Wiz_Detention/
 │       ├── __init__.py
-│       ├── command.py
 │       ├── constants.py
 │       ├── env_interaction.py
 │       ├── game.py
@@ -41,13 +52,13 @@ WizardDetention/
 │       └── quit_screen.py
 ├── installer.cfg
 ├── README.md
-└── WizardDetention_0.0.1.exe
+└── WizardDetention_1.0.0.exe
 ```
-Source code is located within the src folder. 
+Source code and game assets are located within the src folder. 
 The PIP package build script is installer.cfg
-WizardDetention_0.0.1.exe is the executable for the installer.
-### For the Devs
-Build the package:
-```
-python -m nsist installer.cfg
-```
+WizardDetention.exe is the executable for the installer.
+
+### Links
+[Github] (https://github.com/juliamckay/WizDetention)
+
+[Gzipped Tar Archive] (https://github.com/juliamckay/WizDetention/tree/master/dist)
