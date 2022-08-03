@@ -336,6 +336,8 @@ class GameScreen(arcade.View):
             self.ih.bind(arcade.key.D, MoveRightCommand(self.wizard))
 
     def reset(self):
+        if self.fading:
+            return
         self.wizard.die()
         self.familiar.die()
 
