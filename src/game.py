@@ -733,9 +733,11 @@ class LevelThree(GameScreen):
     def __init__(self):
         super().__init__()
         self.next_level = QuitScreen()
+        self.text_camera = None
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
+        self.text_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.button_plats.clear()
         self.lever_plats.clear()
         self.player_on_lever = False
@@ -834,15 +836,15 @@ class LevelThree(GameScreen):
         #self.familiar.position = (1220, SPAWN_Y + 100)
 
         # Adding interactable objects
-        self.interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.16)
-        self.interact_box.center_x = 585
-        self.interact_box.center_y = 440
-        self.scene.add_sprite("Interacts", self.interact_box)
+        interact_box = MagicObject("Assets/Sprites/Interacts/rectangle.png", 0.16)
+        interact_box.center_x = 585
+        interact_box.center_y = 440
+        self.scene.add_sprite("Interacts", interact_box)
 
-        self.interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.12)
-        self.interact_box.center_x = 120
-        self.interact_box.center_y = 335
-        self.scene.add_sprite("Interacts", self.interact_box)
+        interact_box = MagicObject("Assets/Sprites/Interacts/box.png", 0.12)
+        interact_box.center_x = 120
+        interact_box.center_y = 335
+        self.scene.add_sprite("Interacts", interact_box)
 
         # Load textures for when targeting is occurring
         super().setup_target_sprites()
@@ -851,6 +853,19 @@ class LevelThree(GameScreen):
         self.ih = InputHandler(self.wizard, self.familiar, self)
 
         super().setup_physics()
+
+    def on_draw(self):
+        self.clear()
+        self.manager.draw()
+        self.scene.draw()
+
+        self.text_camera.use()
+
+        arcade.draw_text("Hey Wizard! Press E to swap between targets (if in range).", 100, 530,
+                         arcade.color.AFRICAN_VIOLET, 12, 80)
+
+        super().handle_fade()
+
 
 
 def load_texture_pair(filename):
