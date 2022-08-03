@@ -157,6 +157,8 @@ class GameScreen(arcade.View):
         self.dying = False
         self.nl = False
 
+        self.toggle_movements(True)
+
     def on_show_view(self):
         self.setup()
         arcade.set_background_color(arcade.color.GRAY)
@@ -309,6 +311,8 @@ class GameScreen(arcade.View):
             self.fading = True
             self.nl = True
 
+            self.toggle_movements(False)
+
     # region helpers
 
     def get_target_sprite(self):
@@ -355,6 +359,8 @@ class GameScreen(arcade.View):
     def reset(self):
         self.wizard.die()
         self.familiar.die()
+
+        self.toggle_movements(False)
         # Fade view
         self.fading = True
 
@@ -378,6 +384,14 @@ class GameScreen(arcade.View):
             elif self.fade_val < 0:
                 self.fade_val = 0
 
+    def toggle_movements(self, boolean):
+        self.wizard.can_move = boolean
+        self.familiar.can_move = boolean
+
+        for obj in self.scene["Interacts"]:
+            obj.can_move = boolean
+            obj.change_x = 0
+            obj.change_y = 0
 
     # endregion
 
@@ -916,12 +930,10 @@ class PlayerCharacter(SpecialSprite):
         self.death = True
         self.change_x = 0
         self.change_y = 0
-        self.can_move = False
 
     def alive(self):
         self.death_ctr = 0
         self.death = False
-        self.can_move = True
 
 
 class MagicObject(SpecialSprite):
@@ -1074,10 +1086,7 @@ class MoveBoxRightCommand(MoveRightCommand):
         super().__init__(sprite)
 
     def __call__(self):
-        self.called = self.sprite.can_move
-        if self.called:
-            self.sprite.change_x += PLAYER_MS
-        # super().__call__()
+        super().__call__()
 
     def undo(self):
         if self.called and self.sprite.can_move:
