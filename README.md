@@ -17,7 +17,6 @@ Utilizing the installer.cfg, build the installer with this command:
 ```
 python -m nsist installer.cfg
 ```
-This will create a build folder. Inside the build folder, the installer is located within the nsis folder as WizardDetention_1.0.0.exe
 
 ### Installation with double-click executable installer
 Launch the installer, WizardDetention_1.0.0.exe, by double-clicking the executable. Follow the instructions for instillation. 
