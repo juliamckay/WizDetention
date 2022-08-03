@@ -231,8 +231,7 @@ class GameScreen(arcade.View):
         else:
             # Select the target
             for target in self.scene["Interacts"]:
-                if(arcade.get_distance(self.wizard.center_x, self.wizard.center_y,
-                                       target.center_x, target.center_y) < 100):
+                if self.in_target_range(target):
                     self.target = target
                     self.target_anim_sprite.position = self.target.position
                     self.target_anim_sprite.alpha = 255
@@ -291,11 +290,6 @@ class GameScreen(arcade.View):
         # for now it just goes to quit screen since there is no level 2 yet
         if arcade.check_for_collision_with_list(self.wizard, self.scene["Door"]) and \
                 arcade.check_for_collision_with_list(self.familiar, self.scene["Door"]):
-            if isinstance(self.next_level, QuitScreen):
-                self.main_theme.stop(self.main_player)
-            else:
-                self.next_level.main_player = self.main_player
-
             self.next_level_prep()
 
     # region helpers
@@ -389,6 +383,11 @@ class GameScreen(arcade.View):
             obj.change_y = 0
 
     def next_level_prep(self):
+        if isinstance(self.next_level, QuitScreen):
+            self.main_theme.stop(self.main_player)
+        else:
+            self.next_level.main_player = self.main_player
+
         self.fading = True
         self.nl = True
         self.toggle_movements(False)
@@ -410,6 +409,9 @@ class GameScreen(arcade.View):
                     self.setup()
                 # Finally, fade in
                 self.fade_state = -1
+
+    def in_target_range(self, target):
+        return arcade.get_distance(self.wizard.center_x, self.wizard.center_y, target.center_x, target.center_y) < 100
 
     # endregion
 
@@ -973,7 +975,8 @@ class InputHandler:
                 arcade.key.UP: JumpCommand(cat),
                 arcade.key.R: Reset(view),
                 arcade.key.ESCAPE: Quit(view),
-                arcade.key.L: SkipLevel(view)
+                arcade.key.L: SkipLevel(view),
+                arcade.key.P: AlternateTargets(view)
             }
 
     def handle_input(self, key_pressed):
@@ -1144,6 +1147,34 @@ class SkipLevel(Command):
     def __call__(self):
         if self.gs.next_level:
             self.gs.next_level_prep()
+
+    def undo(self):
+        return
+
+
+class AlternateTargets(Command):
+    """Swap Targets if a different one is available"""
+    def __init__(self, view: GameScreen):
+        super().__init__(None)
+        self.view = view
+        self.target = None
+
+    def __call__(self):
+        """Call will find current target, then check to see if any other interactables can be the target"""
+        # Find Target
+        self.target = self.view.get_target_sprite()
+        if not self.target:
+            return
+
+        # Loop through all available targets
+        # To do: Make loop happen by index so there is no box priority
+        index = self.view.scene["Interacts"].index(self.target)
+        length = len(self.view.scene["Interacts"])
+        for i in range(1, length):
+            targetIndex = (index + i) % length
+            target = self.view.scene["Interacts"][targetIndex]
+            if self.view.in_target_range(target):
+                self.view.target = target
 
     def undo(self):
         return
