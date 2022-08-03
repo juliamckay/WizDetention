@@ -376,10 +376,12 @@ class GameScreen(arcade.View):
         self.wizard.can_move = boolean
         self.wizard.change_x = 0
         self.wizard.change_y = 0
+
         # Familiar
         self.familiar.can_move = boolean
         self.familiar.change_x = 0
         self.familiar.change_y = 0
+
         # Interact Objects
         for obj in self.scene["Interacts"]:
             obj.can_move = boolean
